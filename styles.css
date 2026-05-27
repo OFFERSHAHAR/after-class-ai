@@ -18,6 +18,10 @@
   box-sizing: border-box;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 body {
   margin: 0;
   min-height: 100vh;
@@ -26,7 +30,8 @@ body {
 }
 
 button,
-input {
+input,
+textarea {
   font: inherit;
 }
 
@@ -160,13 +165,21 @@ button {
 .small-btn,
 .ghost-btn,
 .primary-btn,
-.wide-btn {
+.wide-btn,
+.ghost-link {
   border: 1px solid var(--line);
   border-radius: 8px;
   background: #fff;
   color: var(--ink);
   min-height: 40px;
   padding: 0 14px;
+}
+
+.ghost-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
 }
 
 .icon-btn {
@@ -189,6 +202,18 @@ button {
 .wide-btn {
   width: 100%;
   margin-top: 18px;
+}
+
+.wide-flat {
+  width: 100%;
+  margin-top: 10px;
+}
+
+.side-note {
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 0.86rem;
+  line-height: 1.5;
 }
 
 .workspace {
@@ -359,6 +384,67 @@ button {
   gap: 18px;
 }
 
+.builder-grid {
+  display: grid;
+  grid-template-columns: minmax(320px, 0.9fr) minmax(0, 1.1fr);
+  gap: 18px;
+}
+
+.builder-form {
+  display: grid;
+  gap: 14px;
+}
+
+.builder-form label {
+  display: grid;
+  gap: 7px;
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.builder-form input,
+.builder-form textarea,
+.modal-card input {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--ink);
+  padding: 10px 12px;
+}
+
+.builder-form textarea {
+  min-height: 110px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.button-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.lesson-preview {
+  display: grid;
+  gap: 12px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fbfcfc;
+}
+
+.lesson-preview h3,
+.lesson-preview p {
+  margin: 0;
+}
+
+.lesson-preview ol {
+  margin: 4px 0 0;
+  padding-inline-start: 22px;
+  line-height: 1.8;
+}
+
 .join-panel {
   align-self: start;
 }
@@ -499,6 +585,37 @@ button[disabled] {
   gap: 16px;
 }
 
+.modal {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(12, 22, 24, 0.42);
+  z-index: 20;
+}
+
+.modal-card {
+  display: grid;
+  gap: 14px;
+  width: min(440px, 100%);
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.22);
+}
+
+.modal-card h3,
+.modal-card p {
+  margin: 0;
+}
+
+.modal-card p {
+  color: var(--muted);
+  line-height: 1.6;
+}
+
 .template-card {
   display: grid;
   gap: 12px;
@@ -523,6 +640,7 @@ button[disabled] {
   .metrics-grid,
   .teacher-layout,
   .student-stage,
+  .builder-grid,
   .template-grid {
     grid-template-columns: 1fr;
   }

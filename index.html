@@ -13,71 +13,117 @@
           <div class="brand-mark">AI</div>
           <div>
             <h1>After Class AI</h1>
-            <p>מעבדת n8n חיה אחרי השיעור</p>
+            <p>כיתה חיה לתרגול אחרי השיעור</p>
           </div>
         </div>
 
         <nav class="nav-list">
-          <button class="nav-item active" data-view="teacher" type="button">
-            <span>לוח מורה</span>
-            <strong>Live</strong>
-          </button>
-          <button class="nav-item" data-view="student" type="button">
+          <button class="nav-item active" data-view="student" data-role="student" type="button">
             <span>מסך תלמיד</span>
-            <strong>Lab</strong>
+            <strong>פתוח</strong>
           </button>
-          <button class="nav-item" data-view="workflows" type="button">
-            <span>תבניות n8n</span>
-            <strong>3</strong>
+          <button class="nav-item" data-view="workflows" data-role="student" type="button">
+            <span>תבניות לתרגול</span>
+            <strong>קבצים</strong>
+          </button>
+          <button class="nav-item teacher-only" data-view="teacher" data-role="teacher" type="button" hidden>
+            <span>לוח מורה</span>
+            <strong>חי</strong>
+          </button>
+          <button class="nav-item teacher-only" data-view="teacher-builder" data-role="teacher" type="button" hidden>
+            <span>הכנת שיעור</span>
+            <strong>מורה</strong>
           </button>
         </nav>
 
         <section class="side-panel">
-          <div class="mini-label">שרת מקומי</div>
+          <div class="mini-label">מצב כיתה</div>
           <div class="server-row">
             <span class="status-dot"></span>
-            <span>n8n.local:5678</span>
+            <span id="roleLabel">תצוגת תלמיד</span>
           </div>
-          <div class="side-actions">
-            <button class="icon-btn" type="button" title="העתקת קישור">⧉</button>
-            <button class="icon-btn" type="button" title="פתיחת סביבת n8n">↗</button>
-          </div>
+          <button class="wide-btn" id="teacherGateOpen" type="button">כניסת מורה</button>
+          <button class="ghost-btn wide-flat teacher-only" id="teacherExit" type="button" hidden>יציאה מתצוגת מורה</button>
+          <p class="side-note">תלמידים רואים רק את אזור העבודה שלהם. לוח המורה מוסתר עד כניסה יזומה.</p>
         </section>
       </aside>
 
       <main class="workspace">
         <header class="topbar">
           <div>
-            <p class="eyebrow">מחזור הטמעת AI בארגונים</p>
-            <h2>כיתה פתוחה לתרגול workflows</h2>
+            <p class="eyebrow">מעבדת תרגול חיה</p>
+            <h2 id="pageTitle">מריצים, בודקים, ומקבלים משוב בלי פקודות</h2>
           </div>
-          <div class="topbar-actions">
+          <div class="topbar-actions teacher-only" hidden>
             <button class="ghost-btn" id="simulateRun" type="button">הרצת דמו</button>
             <button class="primary-btn" id="createSession" type="button">פתיחת מפגש</button>
           </div>
         </header>
 
-        <section class="view active" id="teacher">
+        <section class="view active" id="student">
+          <div class="student-stage">
+            <section class="panel join-panel">
+              <h3>הצטרפות למעבדה</h3>
+              <p>התלמיד מקבל תרגיל, פותח אותו בסביבת העבודה, מבצע תיקון מודרך, ואז בודק מהמסך הזה בלבד.</p>
+              <div class="form-row">
+                <input id="studentName" type="text" placeholder="שם תלמיד/ה" value="נועה" />
+                <input id="sessionCode" type="text" placeholder="קוד שיעור" value="AI-203" />
+                <button class="primary-btn" id="joinLab" type="button">הצטרפות</button>
+              </div>
+              <p class="connection-note" id="connectionNote">מתחברים לשיעור הפעיל.</p>
+              <p class="action-note" id="studentActionNote" aria-live="polite">מוכן לפעולה.</p>
+            </section>
+
+            <section class="panel student-workflow">
+              <div class="panel-header">
+                <div>
+                  <h3>התרגיל שלי</h3>
+                  <p>פותחים את קובץ התרגיל, מתקנים את האזור שהמורה הגדיר, ואז בודקים מהכפתור כאן.</p>
+                </div>
+                <span class="pill">סביבת ניסוי</span>
+              </div>
+              <div class="node-map" aria-label="מפת תרגיל">
+                <div class="node">קבלת פנייה</div>
+                <div class="connector"></div>
+                <div class="node ai">אזור תיקון תלמיד</div>
+                <div class="connector"></div>
+                <div class="node sheet">תשובה ובדיקה</div>
+              </div>
+              <div class="run-controls">
+                <button class="primary-btn" id="testChatbot" type="button">בדוק צאט בוט</button>
+                <button class="primary-btn" id="studentRun" type="button">סמן שהרצתי</button>
+                <button class="ghost-btn" id="downloadWorkflow" type="button">הורד תרגיל</button>
+                <button class="ghost-btn" id="helpRequest" type="button">אני צריך עזרה</button>
+                <a class="ghost-link" id="openN8n" href="http://127.0.0.1:5678" target="_blank" rel="noreferrer">פתח סביבת עבודה</a>
+              </div>
+              <div class="result-box" id="chatbotResult" aria-live="polite">
+                התשובה מהתרגיל תופיע כאן אחרי בדיקה.
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <section class="view" id="teacher">
           <div class="metrics-grid">
             <article class="metric-card">
               <span>תלמידים פעילים</span>
-              <strong id="activeStudents">12</strong>
-              <small>4 עובדים על webhook</small>
+              <strong id="activeStudents">0</strong>
+              <small>מתעדכן מהגיליון</small>
             </article>
             <article class="metric-card">
               <span>הרצות מוצלחות</span>
-              <strong id="successRuns">28</strong>
-              <small>ב־45 הדקות האחרונות</small>
+              <strong id="successRuns">0</strong>
+              <small>בדיקות שעברו</small>
             </article>
             <article class="metric-card warning">
               <span>דורש עזרה</span>
-              <strong id="needsHelp">3</strong>
-              <small>בעיקר credentials</small>
+              <strong id="needsHelp">0</strong>
+              <small>תלמידים שביקשו עזרה</small>
             </article>
             <article class="metric-card">
-              <span>תבנית נוכחית</span>
-              <strong>Lead Bot</strong>
-              <small>Webhook + AI + Sheets</small>
+              <span>תרגיל נוכחי</span>
+              <strong id="currentExerciseName">צאט בוט שירות</strong>
+              <small id="currentExercisePath">קובץ כיתה פעיל</small>
             </article>
           </div>
 
@@ -86,7 +132,7 @@
               <div class="panel-header">
                 <div>
                   <h3>מעבדה חיה</h3>
-                  <p>כל הרצה מופיעה כאן כדי שהכיתה תוכל ללמוד יחד.</p>
+                  <p>כאן רואים מי הצטרף, מי הריץ, מי נכשל ומי ביקש עזרה.</p>
                 </div>
                 <button class="small-btn" id="clearFeed" type="button">ניקוי</button>
               </div>
@@ -96,66 +142,78 @@
             <section class="panel">
               <div class="panel-header">
                 <div>
-                  <h3>תרגיל נוכחי</h3>
-                  <p>שכפול workflow אישי מתוך תבנית.</p>
-                </div>
-              </div>
-              <div class="exercise-box">
-                <div class="exercise-icon">⚡</div>
-                <div>
-                  <h4>Lead Bot מהיר</h4>
-                  <p>Webhook קולט ליד, AI מסווג דחיפות, והתוצאה נשמרת ב־Google Sheets.</p>
+                  <h3>מצב שיעור</h3>
+                  <p>רשימת בדיקה מהירה לפני שמתחילים עם הכיתה.</p>
                 </div>
               </div>
               <div class="checklist">
-                <label><input type="checkbox" checked /> webhook פעיל</label>
-                <label><input type="checkbox" checked /> מפתח OpenAI מוגדר בסביבת דמו</label>
-                <label><input type="checkbox" /> בדיקת שגיאות לתלמידים</label>
+                <label><input type="checkbox" checked /> השרת המקומי פתוח</label>
+                <label><input type="checkbox" checked /> הקישור הציבורי פעיל</label>
+                <label><input type="checkbox" /> התרגיל הופעל בסביבת העבודה</label>
+                <label><input type="checkbox" /> תלמיד בדק מקצה לקצה</label>
               </div>
-              <button class="wide-btn" id="cloneForClass" type="button">שכפל תרגיל לכל הכיתה</button>
+              <button class="wide-btn" id="cloneForClass" type="button">פרסם את התרגיל לכיתה</button>
             </section>
           </div>
         </section>
 
-        <section class="view" id="student">
-          <div class="student-stage">
-            <section class="panel join-panel">
-              <h3>הצטרפות למעבדה</h3>
-              <p>תלמיד מקבל סביבת ניסוי אישית, מריץ, והכיתה רואה את הסטטוס בלי לגעת בעבודה שלו.</p>
-              <div class="form-row">
-                <input id="studentName" type="text" placeholder="שם תלמיד/ה" value="נועה" />
-                <input id="sessionCode" type="text" placeholder="קוד שיעור" value="AI-203" />
-                <button class="primary-btn" id="joinLab" type="button">הצטרפות</button>
-              </div>
-              <p class="connection-note" id="connectionNote">מצב דמו. אחרי הכנסת כתובת הסקריפט, הנתונים יישמרו בגיליון.</p>
-              <p class="action-note" id="studentActionNote" aria-live="polite">מוכן לפעולה.</p>
-            </section>
-
-            <section class="panel student-workflow">
+        <section class="view" id="teacher-builder">
+          <div class="builder-grid">
+            <section class="panel">
               <div class="panel-header">
                 <div>
-                  <h3>ה־workflow שלי</h3>
-                  <p>עותק אישי מתוך התרגיל הנוכחי.</p>
+                  <h3>הכנת שיעור חדש</h3>
+                  <p>המורה מגדיר מה התלמידים מקבלים, מה הם צריכים לתקן, ומה נבדק אוטומטית.</p>
                 </div>
-                <span class="pill">Sandbox</span>
               </div>
-              <div class="node-map" aria-label="מפת workflow">
-                <div class="node">Support Chat</div>
-                <div class="connector"></div>
-                <div class="node ai">Canned Replies</div>
-                <div class="connector"></div>
-                <div class="node sheet">Answer</div>
+              <div class="builder-form">
+                <label>
+                  שם השיעור
+                  <input id="lessonTitle" type="text" value="צאט בוט שירות לקוחות" />
+                </label>
+                <label>
+                  מטרת התרגיל
+                  <textarea id="lessonGoal">התלמיד יתקן תשובות מוכנות בצאט בוט ויבדוק שהתגובה חוזרת בצורה נכונה.</textarea>
+                </label>
+                <label>
+                  מה התלמיד צריך לשנות
+                  <textarea id="guidedFix">פתח את האזור שנקרא אזור תיקון תלמיד, שנה את התשובות המובנות, שמור, הפעל, ואז לחץ בדיקה בממשק.</textarea>
+                </label>
+                <label>
+                  כתובת בדיקה
+                  <input id="webhookUrlInput" type="url" />
+                </label>
+                <label>
+                  העלאת קובץ תרגיל
+                  <input id="workflowFileInput" type="file" accept=".json,application/json" />
+                </label>
+                <div class="button-row">
+                  <button class="primary-btn" id="publishLesson" type="button">פרסם מקומית לכיתה</button>
+                  <button class="ghost-btn" id="downloadLessonPlan" type="button">הורד דף שיעור</button>
+                </div>
+                <p class="action-note" id="teacherBuilderNote" aria-live="polite">מוכן להכנת שיעור.</p>
               </div>
-              <div class="run-controls">
-                <button class="primary-btn" id="testChatbot" type="button">בדוק צאט בוט</button>
-                <button class="primary-btn" id="studentRun" type="button">הרץ workflow</button>
-                <button class="ghost-btn" id="downloadWorkflow" type="button">הורד workflow</button>
-                <button class="ghost-btn" id="helpRequest" type="button">אני צריך עזרה</button>
-                <button class="ghost-btn" type="button">פתח ב־n8n</button>
+            </section>
+
+            <section class="panel">
+              <div class="panel-header">
+                <div>
+                  <h3>תצוגה לתלמיד</h3>
+                  <p>כך התלמיד יבין מה עליו לעשות בלי הסבר טכני ארוך.</p>
+                </div>
               </div>
-              <div class="result-box" id="chatbotResult" aria-live="polite">
-                התשובה מהתרגיל תופיע כאן אחרי בדיקה.
-              </div>
+              <article class="lesson-preview">
+                <span class="template-tag">תרגיל פעיל</span>
+                <h3 id="lessonPreviewTitle">צאט בוט שירות לקוחות</h3>
+                <p id="lessonPreviewGoal">התלמיד יתקן תשובות מוכנות בצאט בוט ויבדוק שהתגובה חוזרת בצורה נכונה.</p>
+                <ol>
+                  <li>הורד את קובץ התרגיל.</li>
+                  <li>ייבא אותו לסביבת העבודה.</li>
+                  <li>תקן רק את האזור שהמורה סימן.</li>
+                  <li>הפעל ולחץ בדיקה בממשק.</li>
+                </ol>
+              </article>
+              <div class="result-box" id="workflowFileStatus">עדיין לא הועלה קובץ חדש. כרגע משתמשים בתרגיל ברירת המחדל.</div>
             </section>
           </div>
         </section>
@@ -164,25 +222,38 @@
           <div class="template-grid">
             <article class="template-card">
               <span class="template-tag">מתחילים</span>
-              <h3>Webhook Echo</h3>
-              <p>תרגול בסיסי של קבלת בקשה, שינוי JSON והחזרת תשובה.</p>
-              <button class="small-btn" type="button">שכפול</button>
+              <h3>בדיקת וובהוק</h3>
+              <p>תרגול בסיסי של קבלת בקשה והחזרת תשובה ברורה.</p>
+              <button class="small-btn" type="button">בחר תבנית</button>
             </article>
             <article class="template-card">
-              <span class="template-tag">AI</span>
-              <h3>Lead Bot</h3>
-              <p>סיווג לידים עם מודל שפה ושמירה לגיליון תרגול.</p>
-              <button class="small-btn" type="button">שכפול</button>
+              <span class="template-tag">בינה מלאכותית</span>
+              <h3>צאט בוט שירות</h3>
+              <p>תשובות מובנות, זיהוי כוונה, והחזרת תשובה לתלמיד.</p>
+              <button class="small-btn" type="button">בחר תבנית</button>
             </article>
             <article class="template-card">
               <span class="template-tag">ארגוני</span>
-              <h3>Ticket Router</h3>
-              <p>ניתוב פניות לפי נושא, דחיפות וצוות מטפל.</p>
-              <button class="small-btn" type="button">שכפול</button>
+              <h3>ניתוב פניות</h3>
+              <p>פנייה נכנסת, החלטה לפי נושא, וסימון סטטוס בלוח המורה.</p>
+              <button class="small-btn" type="button">בחר תבנית</button>
             </article>
           </div>
         </section>
       </main>
+    </div>
+
+    <div class="modal" id="teacherGate" hidden>
+      <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="teacherGateTitle">
+        <h3 id="teacherGateTitle">כניסת מורה</h3>
+        <p>הקוד מונע מתלמידים לפתוח בטעות את לוח הכיתה. זו הפרדה תפעולית לשיעור, לא אבטחה מלאה.</p>
+        <input id="teacherCodeInput" type="password" placeholder="קוד מורה" />
+        <p class="action-note" id="teacherGateNote" aria-live="polite"></p>
+        <div class="button-row">
+          <button class="primary-btn" id="teacherLogin" type="button">כניסה</button>
+          <button class="ghost-btn" id="teacherGateClose" type="button">ביטול</button>
+        </div>
+      </div>
     </div>
 
     <script src="config.js"></script>

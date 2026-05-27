@@ -2,37 +2,23 @@ const config = window.AFTER_CLASS_AI_CONFIG || {};
 const apiUrl = (config.sheetsApiUrl || "").trim();
 const defaultSessionCode = config.defaultSessionCode || "AI-203";
 const refreshSeconds = Number(config.refreshSeconds || 10);
+const teacherCode = config.teacherCode || "teacher203";
 
 const state = {
   session: null,
   student: null,
-  demoMode: !apiUrl,
+  teacherMode: localStorage.getItem("afterClassTeacherMode") === "true",
+  uploadedWorkflow: null,
 };
 
 const feedItems = [
   {
-    status: "ok",
-    icon: "✓",
-    name: "מאיה",
-    title: "הרצה הסתיימה בהצלחה",
-    detail: "הליד סווג ונרשם בגיליון התרגול.",
-    time: "לפני דקה",
-  },
-  {
     status: "run",
     icon: "…",
-    name: "איתי",
-    title: "בודק כתובת קבלה",
-    detail: "ממתין לשליחת נתוני בדיקה.",
+    name: "מערכת",
+    title: "ממתינה לפעילות כיתה",
+    detail: "תלמידים שיצטרפו, יריצו או יבקשו עזרה יופיעו כאן.",
     time: "עכשיו",
-  },
-  {
-    status: "help",
-    icon: "!",
-    name: "רוני",
-    title: "צריך עזרה",
-    detail: "בעיה בהרשאות או בחיבור לגיליון.",
-    time: "לפני 4 דק׳",
   },
 ];
 
@@ -50,8 +36,21 @@ const helpButton = document.querySelector("#helpRequest");
 const downloadButton = document.querySelector("#downloadWorkflow");
 const testChatbotButton = document.querySelector("#testChatbot");
 const chatbotResult = document.querySelector("#chatbotResult");
+const roleLabel = document.querySelector("#roleLabel");
+const pageTitle = document.querySelector("#pageTitle");
+const currentExerciseName = document.querySelector("#currentExerciseName");
+const currentExercisePath = document.querySelector("#currentExercisePath");
+const teacherBuilderNote = document.querySelector("#teacherBuilderNote");
+const workflowFileStatus = document.querySelector("#workflowFileStatus");
+const webhookUrlInput = document.querySelector("#webhookUrlInput");
+const lessonTitle = document.querySelector("#lessonTitle");
+const lessonGoal = document.querySelector("#lessonGoal");
+const guidedFix = document.querySelector("#guidedFix");
+const lessonPreviewTitle = document.querySelector("#lessonPreviewTitle");
+const lessonPreviewGoal = document.querySelector("#lessonPreviewGoal");
 
 sessionCodeInput.value = defaultSessionCode;
+webhookUrlInput.value = config.n8nWebhookUrl || "";
 
 function setConnection(message, status = "") {
   connectionNote.textContent = message;
@@ -61,6 +60,11 @@ function setConnection(message, status = "") {
 function setAction(message, status = "") {
   studentActionNote.textContent = message;
   studentActionNote.className = `action-note ${status}`.trim();
+}
+
+function setTeacherNote(message, status = "") {
+  teacherBuilderNote.textContent = message;
+  teacherBuilderNote.className = `action-note ${status}`.trim();
 }
 
 function setButtonBusy(button, busyText) {
@@ -79,7 +83,31 @@ function setChatbotResult(message, status = "") {
   chatbotResult.className = `result-box ${status}`.trim();
 }
 
+function setView(viewId) {
+  const target = state.teacherMode ? viewId : viewId === "teacher" || viewId === "teacher-builder" ? "student" : viewId;
+  document.querySelectorAll(".nav-item").forEach((item) => {
+    item.classList.toggle("active", item.dataset.view === target);
+  });
+  document.querySelectorAll(".view").forEach((view) => {
+    view.classList.toggle("active", view.id === target);
+  });
+}
+
+function applyRoleMode() {
+  document.querySelectorAll(".teacher-only").forEach((element) => {
+    element.hidden = !state.teacherMode;
+  });
+  roleLabel.textContent = state.teacherMode ? "תצוגת מורה פעילה" : "תצוגת תלמיד";
+  pageTitle.textContent = state.teacherMode
+    ? "לוח מורה והכנת שיעור לכיתה חיה"
+    : "מריצים, בודקים, ומקבלים משוב בלי פקודות";
+  if (!state.teacherMode && (document.querySelector(".view.active")?.id || "") !== "student") {
+    setView("student");
+  }
+}
+
 function renderFeed() {
+  if (!feedList) return;
   feedList.innerHTML = feedItems
     .map(
       (item) => `
@@ -154,10 +182,8 @@ function addDemoRun(name = studentNames[Math.floor(Math.random() * studentNames.
     detail: ok ? "הפעולה נשמרה בלוח הכיתה." : "חסר שדה בנתוני הבדיקה.",
   });
 
-  const success = Number(successRuns.textContent);
-  const help = Number(needsHelp.textContent);
-  successRuns.textContent = ok ? success + 1 : success;
-  needsHelp.textContent = ok ? Math.max(0, help - 1) : help + 1;
+  successRuns.textContent = ok ? Number(successRuns.textContent) + 1 : successRuns.textContent;
+  needsHelp.textContent = ok ? Math.max(0, Number(needsHelp.textContent) - 1) : Number(needsHelp.textContent) + 1;
 }
 
 function updateDashboardFromRemote(payload) {
@@ -199,8 +225,8 @@ function updateDashboardFromRemote(payload) {
     feedItems.push({
       status: "run",
       icon: "…",
-      name: "המערכת",
-      title: "מחכה לפעילות כיתה",
+      name: "מערכת",
+      title: "ממתינה לפעילות כיתה",
       detail: "תלמידים שיופיעו בגיליון יוצגו כאן.",
       time: "עכשיו",
     });
@@ -218,7 +244,7 @@ function formatTime(value) {
 
 async function refreshState() {
   if (!apiUrl) {
-    setConnection("מצב דמו. הכנס כתובת סקריפט בקובץ ההגדרות כדי לעבוד מול הגיליון.");
+    setConnection("מצב דמו. אחרי חיבור הסקריפט הנתונים יישמרו בגיליון.");
     return;
   }
 
@@ -229,20 +255,65 @@ async function refreshState() {
       return;
     }
 
-    setConnection("מחובר לגיליון. הנתונים נשמרים ומתעדכנים.", "connected");
+    setConnection("מחובר לגיליון. הפעילות נשמרת ומתעדכנת.", "connected");
     updateDashboardFromRemote(payload);
   } catch (error) {
     setConnection(error.message, "error");
   }
 }
 
+function downloadTextFile(fileName, text, type = "application/json") {
+  const blob = new Blob([text], { type });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = fileName;
+  document.body.appendChild(link);
+  link.click();
+  URL.revokeObjectURL(link.href);
+  link.remove();
+}
+
+function updateLessonPreview() {
+  lessonPreviewTitle.textContent = lessonTitle.value.trim() || "שיעור ללא שם";
+  lessonPreviewGoal.textContent = lessonGoal.value.trim() || "מטרת התרגיל תופיע כאן.";
+  currentExerciseName.textContent = lessonTitle.value.trim() || "תרגיל נוכחי";
+  currentExercisePath.textContent = state.uploadedWorkflow?.name || "קובץ כיתה פעיל";
+}
+
 document.querySelectorAll(".nav-item").forEach((button) => {
-  button.addEventListener("click", () => {
-    document.querySelectorAll(".nav-item").forEach((item) => item.classList.remove("active"));
-    document.querySelectorAll(".view").forEach((view) => view.classList.remove("active"));
-    button.classList.add("active");
-    document.querySelector(`#${button.dataset.view}`).classList.add("active");
-  });
+  button.addEventListener("click", () => setView(button.dataset.view));
+});
+
+document.querySelector("#teacherGateOpen").addEventListener("click", () => {
+  document.querySelector("#teacherGate").hidden = false;
+  document.querySelector("#teacherCodeInput").focus();
+});
+
+document.querySelector("#teacherGateClose").addEventListener("click", () => {
+  document.querySelector("#teacherGate").hidden = true;
+});
+
+document.querySelector("#teacherLogin").addEventListener("click", () => {
+  const input = document.querySelector("#teacherCodeInput");
+  const note = document.querySelector("#teacherGateNote");
+  if (input.value.trim() !== teacherCode) {
+    note.textContent = "קוד שגוי.";
+    note.className = "action-note error";
+    return;
+  }
+  state.teacherMode = true;
+  localStorage.setItem("afterClassTeacherMode", "true");
+  document.querySelector("#teacherGate").hidden = true;
+  input.value = "";
+  applyRoleMode();
+  setView("teacher");
+});
+
+document.querySelector("#teacherExit").addEventListener("click", () => {
+  state.teacherMode = false;
+  localStorage.removeItem("afterClassTeacherMode");
+  applyRoleMode();
+  setView("student");
 });
 
 document.querySelector("#simulateRun").addEventListener("click", () => addDemoRun());
@@ -269,13 +340,6 @@ document.querySelector("#studentRun").addEventListener("click", async () => {
     });
 
     if (payload.ok) {
-      pushFeed({
-        status: "ok",
-        icon: "✓",
-        name,
-        title: "הרצה נרשמה בגיליון",
-        detail: "המורה יראה את ההרצה בלוח הכיתה.",
-      });
       setAction("ההרצה נרשמה בהצלחה.", "success");
       await refreshState();
     } else {
@@ -296,7 +360,7 @@ document.querySelector("#testChatbot").addEventListener("click", async () => {
   setChatbotResult("בודק את הצאט בוט מול סביבת העבודה...");
 
   if (!apiUrl) {
-    setChatbotResult("מצב דמו: הצאט בוט היה מחזיר תשובה מובנית לשירות לקוחות.", "success");
+    setChatbotResult("מצב דמו: הצאט בוט החזיר תשובה מובנית לשירות לקוחות.", "success");
     setAction("בדיקת דמו הסתיימה.", "success");
     release();
     return;
@@ -306,8 +370,8 @@ document.querySelector("#testChatbot").addEventListener("click", async () => {
     const payload = await callApi("runN8nTest", {
       sessionCode,
       actorName: name,
-      workflowName: "Customer Service Chatbot",
-      webhookUrl: config.n8nWebhookUrl,
+      workflowName: lessonTitle.value.trim() || "Customer Service Chatbot",
+      webhookUrl: webhookUrlInput.value.trim() || config.n8nWebhookUrl,
       message: "שלום, אני רוצה לדעת איך מקבלים החזר כספי על הזמנה",
     });
 
@@ -332,20 +396,18 @@ document.querySelector("#testChatbot").addEventListener("click", async () => {
 document.querySelector("#downloadWorkflow").addEventListener("click", () => {
   const release = setButtonBusy(downloadButton, "מוריד...");
   setAction("מוריד את תרגיל הכיתה הנוכחי...", "busy");
-  const link = document.createElement("a");
-  link.href = config.currentWorkflowUrl || "workflows/current-class-workflow.json";
-  link.download = config.currentWorkflowName || "after-class-current-workflow.json";
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
 
-  pushFeed({
-    status: "run",
-    icon: "…",
-    name: "תלמיד",
-    title: "הורדת תבנית",
-    detail: "קובץ התרגיל הנוכחי ירד למחשב וניתן לייבא אותו לתוך n8n.",
-  });
+  if (state.uploadedWorkflow) {
+    downloadTextFile(state.uploadedWorkflow.name, state.uploadedWorkflow.content);
+  } else {
+    const link = document.createElement("a");
+    link.href = config.currentWorkflowUrl || "workflows/current-class-workflow.json";
+    link.download = config.currentWorkflowName || "after-class-current-workflow.json";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  }
+
   setAction("קובץ התרגיל הורד למחשב.", "success");
   window.setTimeout(release, 800);
 });
@@ -364,15 +426,9 @@ document.querySelector("#joinLab").addEventListener("click", async () => {
   if (!apiUrl) {
     activeStudents.textContent = Number(activeStudents.textContent) + 1;
     state.student = { id: `demo-${Date.now()}`, name };
-    pushFeed({
-      status: "run",
-      icon: "…",
-      name,
-      title: "הצטרפות למעבדה",
-      detail: "מצב דמו. בגירסה המחוברת זה יירשם בגיליון.",
-    });
     setAction("הצטרפת במצב דמו.", "success");
-    joinButton.textContent = "הצטרפת";
+    joinButton.textContent = "מחובר";
+    joinButton.disabled = true;
     return;
   }
 
@@ -380,22 +436,16 @@ document.querySelector("#joinLab").addEventListener("click", async () => {
     const payload = await callApi("join", { name, sessionCode });
     if (!payload.ok) {
       setConnection(payload.error || "לא ניתן להצטרף לשיעור", "error");
+      release();
       return;
     }
 
     state.student = payload.student;
     state.session = payload.session;
     setConnection("הצטרפת לשיעור. הפעילות שלך נשמרת בגיליון.", "connected");
-    setAction("הצטרפת בהצלחה. אפשר להוריד תרגיל או להריץ.", "success");
-    joinButton.textContent = "הצטרפת";
+    setAction("הצטרפת בהצלחה. אפשר להוריד תרגיל או להריץ בדיקה.", "success");
+    joinButton.textContent = "מחובר";
     joinButton.disabled = true;
-    pushFeed({
-      status: "run",
-      icon: "…",
-      name,
-      title: "הצטרף לשיעור",
-      detail: `קוד שיעור: ${sessionCode}`,
-    });
     await refreshState();
   } catch (error) {
     setConnection(error.message, "error");
@@ -416,7 +466,7 @@ document.querySelector("#helpRequest").addEventListener("click", async () => {
       icon: "!",
       name,
       title: "בקשת עזרה",
-      detail: "מצב דמו. בגירסה המחוברת זה יירשם בגיליון.",
+      detail: "מצב דמו. בגרסה המחוברת זה יירשם בגיליון.",
     });
     setAction("בקשת עזרה נרשמה במצב דמו.", "success");
     release();
@@ -431,13 +481,6 @@ document.querySelector("#helpRequest").addEventListener("click", async () => {
     });
 
     if (payload.ok) {
-      pushFeed({
-        status: "help",
-        icon: "!",
-        name,
-        title: "בקשת עזרה נשלחה",
-        detail: "המורה יראה את הבקשה בלוח.",
-      });
       setAction("בקשת העזרה נשלחה למורה.", "success");
       await refreshState();
     } else {
@@ -456,13 +499,7 @@ document.querySelector("#clearFeed").addEventListener("click", () => {
 });
 
 document.querySelector("#cloneForClass").addEventListener("click", () => {
-  pushFeed({
-    status: "run",
-    icon: "…",
-    name: "מורה",
-    title: "שכפול תרגיל לכיתה",
-    detail: "בשלב מחר זה יהיה סימון פעילות. בהמשך נחבר שכפול אמיתי.",
-  });
+  setView("teacher-builder");
 });
 
 document.querySelector("#createSession").addEventListener("click", async () => {
@@ -470,7 +507,7 @@ document.querySelector("#createSession").addEventListener("click", async () => {
     pushFeed({
       status: "ok",
       icon: "✓",
-      name: "המערכת",
+      name: "מערכת",
       title: "מפגש דמו נפתח",
       detail: "הכיתה מוכנה לתרגול דמו.",
     });
@@ -479,7 +516,7 @@ document.querySelector("#createSession").addEventListener("click", async () => {
 
   const payload = await callApi("createSession", {
     code: sessionCodeInput.value.trim() || defaultSessionCode,
-    title: "שיעור תרגול חי",
+    title: lessonTitle.value.trim() || "שיעור תרגול חי",
     teacher: "Teacher",
   });
 
@@ -490,6 +527,84 @@ document.querySelector("#createSession").addEventListener("click", async () => {
   }
 });
 
+document.querySelector("#workflowFileInput").addEventListener("change", async (event) => {
+  const [file] = event.target.files;
+  if (!file) return;
+
+  try {
+    const content = await file.text();
+    JSON.parse(content);
+    state.uploadedWorkflow = { name: file.name, content };
+    workflowFileStatus.textContent = `הקובץ ${file.name} נטען בהצלחה ויוצע לתלמידים להורדה במחשב הזה.`;
+    workflowFileStatus.className = "result-box success";
+    updateLessonPreview();
+    setTeacherNote("קובץ התרגיל נטען בהצלחה.", "success");
+  } catch (error) {
+    state.uploadedWorkflow = null;
+    workflowFileStatus.textContent = "הקובץ לא תקין. צריך קובץ תרגיל בפורמט JSON.";
+    workflowFileStatus.className = "result-box error";
+    setTeacherNote("לא ניתן לקרוא את קובץ התרגיל.", "error");
+  }
+});
+
+[lessonTitle, lessonGoal, guidedFix].forEach((field) => {
+  field.addEventListener("input", updateLessonPreview);
+});
+
+document.querySelector("#publishLesson").addEventListener("click", () => {
+  updateLessonPreview();
+  localStorage.setItem(
+    "afterClassLesson",
+    JSON.stringify({
+      title: lessonTitle.value.trim(),
+      goal: lessonGoal.value.trim(),
+      guidedFix: guidedFix.value.trim(),
+      webhookUrl: webhookUrlInput.value.trim(),
+      workflowName: state.uploadedWorkflow?.name || config.currentWorkflowName,
+    })
+  );
+  setTeacherNote("השיעור פורסם מקומית. תלמידים במחשב הזה יקבלו את התרגיל הנוכחי.", "success");
+  pushFeed({
+    status: "ok",
+    icon: "✓",
+    name: "מורה",
+    title: "תרגיל פורסם לכיתה",
+    detail: lessonTitle.value.trim() || "שיעור חדש",
+  });
+});
+
+document.querySelector("#downloadLessonPlan").addEventListener("click", () => {
+  const text = [
+    `שם השיעור: ${lessonTitle.value.trim()}`,
+    "",
+    `מטרה: ${lessonGoal.value.trim()}`,
+    "",
+    `תיקון מודרך: ${guidedFix.value.trim()}`,
+    "",
+    `כתובת בדיקה: ${webhookUrlInput.value.trim()}`,
+    "",
+    `קובץ תרגיל: ${state.uploadedWorkflow?.name || config.currentWorkflowName}`,
+  ].join("\n");
+  downloadTextFile("after-class-lesson-plan.txt", text, "text/plain");
+  setTeacherNote("דף השיעור הורד למחשב.", "success");
+});
+
+const savedLesson = localStorage.getItem("afterClassLesson");
+if (savedLesson) {
+  try {
+    const lesson = JSON.parse(savedLesson);
+    lessonTitle.value = lesson.title || lessonTitle.value;
+    lessonGoal.value = lesson.goal || lessonGoal.value;
+    guidedFix.value = lesson.guidedFix || guidedFix.value;
+    webhookUrlInput.value = lesson.webhookUrl || webhookUrlInput.value;
+  } catch {
+    localStorage.removeItem("afterClassLesson");
+  }
+}
+
 renderFeed();
+updateLessonPreview();
+applyRoleMode();
+setView("student");
 refreshState();
 if (apiUrl) window.setInterval(refreshState, refreshSeconds * 1000);
