@@ -528,6 +528,14 @@ document.querySelector("#teacherExit").addEventListener("click", () => {
   applyRoleMode();
 });
 
+document.querySelector("#studentExit").addEventListener("click", () => {
+  state.role = null;
+  state.teacherMode = false;
+  localStorage.removeItem("afterClassRole");
+  localStorage.removeItem("afterClassTeacherMode");
+  applyRoleMode();
+});
+
 document.querySelector("#studentRun").addEventListener("click", async () => {
   const release = setButtonBusy(runButton, "רושם הרצה...");
   setAction("רושם הרצה בלוח הכיתה...", "busy");
