@@ -6,7 +6,6 @@ set SETTINGS=%~dp0local-settings.cmd
 echo @echo off> "%SETTINGS%"
 echo set CLASSROOM_N8N_PUBLIC_URL=https://unallowable-lustrelessly-pok.ngrok-free.dev>> "%SETTINGS%"
 echo set CLASSROOM_NGROK_DOMAIN=unallowable-lustrelessly-pok.ngrok-free.dev>> "%SETTINGS%"
-echo set CLASSROOM_NGROK_EDGE=24df18ae-43f5-4454-bc82-314077d13200>> "%SETTINGS%"
 
 echo.
 echo Created:
