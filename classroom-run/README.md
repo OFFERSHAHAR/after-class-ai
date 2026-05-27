@@ -103,6 +103,12 @@ CLASSROOM_N8N_PUBLIC_URL
 CLASSROOM_NGROK_DOMAIN
 ```
 
+אפשר ליצור אותו אוטומטית עם:
+
+```text
+CREATE_LOCAL_NGROK_SETTINGS.bat
+```
+
 ## אחרי ההפעלה
 
 להריץ:
