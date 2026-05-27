@@ -448,8 +448,6 @@ document.querySelector("#teacherExit").addEventListener("click", () => {
   applyRoleMode();
 });
 
-document.querySelector("#simulateRun").addEventListener("click", () => addDemoRun());
-
 document.querySelector("#studentRun").addEventListener("click", async () => {
   const release = setButtonBusy(runButton, "רושם הרצה...");
   setAction("רושם הרצה בלוח הכיתה...", "busy");
