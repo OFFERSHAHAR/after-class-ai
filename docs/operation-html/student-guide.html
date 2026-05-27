@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>After Class AI - מדריך תלמיד</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="shell">
+      <header class="hero">
+        <div>
+          <div class="eyebrow">מדריך תלמיד</div>
+          <h1>איך מתרגלים בלי להסתבך</h1>
+          <p>
+            המטרה שלך פשוטה: להיכנס לכיתה, להוריד תרגיל, לפתוח אותו בסביבת העבודה,
+            לתקן את האזור שהמורה סימן, ולהריץ בדיקה מהאתר.
+          </p>
+        </div>
+        <aside class="hero-card">
+          <div class="tag">מה לא צריך לעשות</div>
+          <div class="status-grid">
+            <div class="status-row"><span class="dot"></span><span>לא צריך להריץ פקודות.</span></div>
+            <div class="status-row"><span class="dot"></span><span>לא צריך לבדוק לוגים.</span></div>
+            <div class="status-row"><span class="dot"></span><span>לא צריך להיכנס ללוח המורה.</span></div>
+            <div class="status-row"><span class="dot"></span><span>אם נתקעים, לוחצים אני צריך עזרה.</span></div>
+          </div>
+        </aside>
+      </header>
+
+      <nav class="nav">
+        <a href="index.html">ראשי</a>
+        <a href="#start">התחלה</a>
+        <a href="#work">עבודה על התרגיל</a>
+        <a href="#test">בדיקה</a>
+        <a href="#help">עזרה</a>
+      </nav>
+
+      <main class="content">
+        <section class="panel" id="start">
+          <h2>כניסה לשיעור</h2>
+          <div class="steps">
+            <article class="step">
+              <div>
+                <h3>פתח את אתר הכיתה</h3>
+                <p>היכנס לקישור שהמורה שלח.</p>
+                <div class="codebox">https://after-class-ai.onrender.com/</div>
+              </div>
+            </article>
+            <article class="step">
+              <div>
+                <h3>כתוב שם וקוד שיעור</h3>
+                <p>כתוב את השם שלך ואת קוד השיעור שהמורה נתן.</p>
+              </div>
+            </article>
+            <article class="step">
+              <div>
+                <h3>לחץ הצטרפות</h3>
+                <p>אחרי ההצטרפות, המורה רואה שהתחברת. אין צורך ללחוץ כמה פעמים.</p>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="panel" id="work">
+          <h2>עבודה על התרגיל</h2>
+          <div class="steps">
+            <article class="step">
+              <div>
+                <h3>הורד תרגיל</h3>
+                <p>לחץ על כפתור הורד תרגיל. ירד למחשב קובץ תרגיל.</p>
+              </div>
+            </article>
+            <article class="step">
+              <div>
+                <h3>פתח סביבת עבודה</h3>
+                <p>
+                  לחץ פתח סביבת עבודה כדי לפתוח את
+                  <code>n8n</code>
+                  בדפדפן.
+                </p>
+              </div>
+            </article>
+            <article class="step">
+              <div>
+                <h3>ייבא את הקובץ</h3>
+                <p>
+                  בתוך
+                  <code>n8n</code>
+                  ייבא את קובץ התרגיל שהורדת.
+                </p>
+              </div>
+            </article>
+            <article class="step">
+              <div>
+                <h3>תקן רק את האזור המסומן</h3>
+                <p>
+                  בתרגיל הצאט בוט, האזור החשוב נקרא:
+                </p>
+                <div class="codebox">Student Edit Area - Canned Replies</div>
+              </div>
+            </article>
+            <article class="step">
+              <div>
+                <h3>שמור והפעל</h3>
+                <p>שמור את השינוי והפעל את הוורקפלו. אם הוא כבר פעיל, כבה והדלק שוב אחרי שינוי חשוב.</p>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="panel" id="test">
+          <h2>בדיקה מהאתר</h2>
+          <p>
+            אחרי התיקון לא צריך לפתוח חלון פקודות. חוזרים לאתר הכיתה ולוחצים על כפתור הבדיקה.
+          </p>
+          <div class="flow">
+            <div class="flow-node">חזרה לאתר</div>
+            <div class="flow-node blue">לחיצה על בדיקה</div>
+            <div class="flow-node gold">המערכת שולחת פנייה</div>
+            <div class="flow-node">התשובה חוזרת</div>
+            <div class="flow-node red">המורה רואה חיווי</div>
+          </div>
+          <div class="grid-2" style="margin-top: 18px">
+            <article class="mini-card success">
+              <h3>אם הצליח</h3>
+              <p>תראה תשובה מהצאט בוט, והמורה יראה הרצה מוצלחת.</p>
+            </article>
+            <article class="mini-card danger">
+              <h3>אם נכשל</h3>
+              <p>תראה הודעת שגיאה, והמורה יראה שנדרש טיפול. לא צריך לנסות לנחש לבד.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="panel" id="help">
+          <h2>מתי לבקש עזרה</h2>
+          <div class="check-grid">
+            <article class="check-card">הקובץ לא יורד</article>
+            <article class="check-card">לא מצליחים לייבא</article>
+            <article class="check-card">הוורקפלו לא נשמר</article>
+            <article class="check-card">הבדיקה חוזרת אדומה</article>
+            <article class="check-card">לא ברור איפה לתקן</article>
+            <article class="check-card">הסביבה לא נפתחת</article>
+          </div>
+          <div class="print-note">
+            במקרה כזה לוחצים:
+            <strong>אני צריך עזרה</strong>
+            והמורה רואה אותך בלוח הכיתה.
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2>סיכום לתלמיד</h2>
+          <div class="steps">
+            <article class="step"><div><h3>הצטרפות</h3><p>שם, קוד שיעור, הצטרפות.</p></div></article>
+            <article class="step"><div><h3>הורדה</h3><p>הורד את התרגיל הנוכחי.</p></div></article>
+            <article class="step"><div><h3>ייבוא</h3><p>פתח את סביבת העבודה וייבא את הקובץ.</p></div></article>
+            <article class="step"><div><h3>תיקון</h3><p>שנה רק את האזור שהמורה סימן.</p></div></article>
+            <article class="step"><div><h3>בדיקה</h3><p>חזור לאתר ולחץ בדוק צאט בוט.</p></div></article>
+          </div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>After Class AI - מדריכי הפעלה</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="shell">
+      <header class="hero">
+        <div>
+          <div class="eyebrow">ערכת הפעלה לכיתה חיה</div>
+          <h1>מדריך ההפעלה המלא של הכיתה אחרי הכיתה</h1>
+          <p>
+            המסמך הזה מסביר איך מפעילים שיעור, איך המורה מפרסם תרגיל, איך תלמידים עובדים בלי פקודות,
+            ואיך כל הרצה חוזרת ללוח המורה בצורה ברורה.
+          </p>
+        </div>
+        <aside class="hero-card">
+          <div class="tag">מצב יעד למחר</div>
+          <div class="status-grid">
+            <div class="status-row"><span class="dot"></span><span>המורה רואה לוח כיתה חי.</span></div>
+            <div class="status-row"><span class="dot"></span><span>התלמיד רואה רק מסך תלמיד.</span></div>
+            <div class="status-row"><span class="dot"></span><span>בדיקה מתבצעת מהכפתור בממשק.</span></div>
+            <div class="status-row"><span class="dot"></span><span>אין צורך בפקודות לתלמיד.</span></div>
+          </div>
+        </aside>
+      </header>
+
+      <nav class="nav">
+        <a href="teacher-guide.html">מדריך מורה</a>
+        <a href="student-guide.html">מדריך תלמיד</a>
+        <a href="#flow">תרשים זרימה</a>
+        <a href="#links">קישורים</a>
+      </nav>
+
+      <main class="content">
+        <section class="panel">
+          <h2>מה המערכת עושה</h2>
+          <p>
+            <strong>After Class AI</strong>
+            היא שכבת כיתה מעל סביבת
+            <code>n8n</code>
+            מקומית. המורה מדגים, מפרסם תרגיל, התלמידים מתקנים ומריצים,
+            והמורה מקבל חיווי חי על הצלחות, כשלונות ובקשות עזרה.
+          </p>
+          <div class="grid-3">
+            <article class="mini-card success">
+              <h3>פשוט לתלמיד</h3>
+              <p>התלמיד לא נוגע בפקודות. הוא מוריד תרגיל, פותח סביבת עבודה, מתקן, ולוחץ בדיקה.</p>
+            </article>
+            <article class="mini-card warn">
+              <h3>נוח למורה</h3>
+              <p>המורה רואה מי הצטרף, מי הצליח, מי נכשל ומי צריך עזרה, בלי לעצור את השיעור.</p>
+            </article>
+            <article class="mini-card">
+              <h3>חינמי וגמיש</h3>
+              <p>המערכת בנויה לעבוד עם שרת מקומי, גיליון גוגל, וקישור ציבורי זמני לשיעור.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="panel" id="flow">
+          <h2>תרשים ההפעלה</h2>
+          <p>זה המסלול המלא מרגע שהמורה מכין תרגיל ועד שהתלמיד רואה תוצאה.</p>
+          <div class="flow">
+            <div class="flow-node">מורה מכין תרגיל</div>
+            <div class="flow-node blue">ייצוא קובץ</div>
+            <div class="flow-node gold">פרסום לכיתה</div>
+            <div class="flow-node">תלמיד מוריד ומתקן</div>
+            <div class="flow-node red">בדיקה וחיווי</div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2>שני מדריכים נפרדים</h2>
+          <div class="route-grid">
+            <article class="route-card">
+              <span class="big">01</span>
+              <h3>מדריך מורה</h3>
+              <p>
+                מיועד למדריך שמפעיל את השיעור, מחבר את
+                <code>n8n</code>
+                מפרסם תרגיל, בודק את הכיתה ומנהל תקלות בזמן אמת.
+              </p>
+              <a class="button-link" href="teacher-guide.html">פתח מדריך מורה</a>
+            </article>
+            <article class="route-card">
+              <span class="big">02</span>
+              <h3>מדריך תלמיד</h3>
+              <p>
+                מיועד לתלמיד. מסביר בדיוק מה ללחוץ, איך להוריד תרגיל, איך לייבא,
+                איפה לתקן, ואיך לשלוח בדיקה למורה.
+              </p>
+              <a class="button-link secondary" href="student-guide.html">פתח מדריך תלמיד</a>
+            </article>
+          </div>
+        </section>
+
+        <section class="panel" id="links">
+          <h2>קישורים מרכזיים</h2>
+          <div class="grid-2">
+            <article class="mini-card">
+              <h3>אתר כיתה</h3>
+              <p>הכתובת הציבורית שבה תלמידים נכנסים לשיעור.</p>
+              <div class="codebox">https://after-class-ai.onrender.com/</div>
+            </article>
+            <article class="mini-card">
+              <h3>סביבת עבודה מקומית</h3>
+              <p>כתובת סביבת העבודה במחשב שמריץ את השירות.</p>
+              <div class="codebox">http://127.0.0.1:5678</div>
+            </article>
+          </div>
+          <div class="print-note">
+            מומלץ לפתוח את העמודים בדפדפן ולשמור כקובץ
+            <code>PDF</code>
+            אם רוצים לשלוח אותם בקבוצת הכיתה.
+          </div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

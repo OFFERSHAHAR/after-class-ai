@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>After Class AI - מדריך מורה</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="shell">
+      <header class="hero">
+        <div>
+          <div class="eyebrow">מדריך מורה</div>
+          <h1>להפעיל שיעור חי בלי לאבד את הכיתה</h1>
+          <p>
+            המורה מדגים תהליך, מייצא תרגיל, מפרסם אותו לכיתה, ואז עוקב אחרי ההרצות והבקשות לעזרה
+            בלי שהתלמידים צריכים לעבוד עם פקודות או לחפש תקלות לבד.
+          </p>
+        </div>
+        <aside class="hero-card">
+          <div class="tag">סיסמת מורה</div>
+          <div class="codebox">teacher203</div>
+          <p>הסיסמה פותחת את לוח המורה ואת פאנל הכנת השיעור.</p>
+        </aside>
+      </header>
+
+      <nav class="nav">
+        <a href="index.html">ראשי</a>
+        <a href="#before">לפני השיעור</a>
+        <a href="#publish">פרסום תרגיל</a>
+        <a href="#live">במהלך השיעור</a>
+        <a href="#errors">תקלות</a>
+      </nav>
+
+      <main class="content">
+        <section class="panel" id="before">
+          <h2>לפני השיעור</h2>
+          <div class="steps">
+            <article class="step">
+              <div>
+                <h3>פתח את שרת הכיתה</h3>
+                <p>הפעל את סביבת הכיתה מהמחשב שמארח את השיעור. ודא שהאתר פתוח ושהתלמידים יכולים להיכנס.</p>
+                <div class="codebox">https://after-class-ai.onrender.com/</div>
+              </div>
+            </article>
+            <article class="step">
+              <div>
+                <h3>פתח את סביבת העבודה</h3>
+                <p>
+                  ודא ש־
+                  <code>n8n</code>
+                  פתוח, שהוורקפלו פעיל, ושהקישור הציבורי של השיעור מחובר.
+                </p>
+                <div class="codebox">http://127.0.0.1:5678</div>
+              </div>
+            </article>
+            <article class="step">
+              <div>
+                <h3>בצע בדיקה אחת בעצמך</h3>
+                <p>לפני שהתלמידים נכנסים, לחץ באתר על בדיקת הצאט בוט וודא שמתקבלת תשובה ירוקה.</p>
+              </div>
+            </article>
+            <article class="step">
+              <div>
+                <h3>נקה את המעבדה החיה</h3>
+                <p>לאחר בדיקת ההכנה, לחץ ניקוי כדי שהתלמידים יתחילו מלוח נקי.</p>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="panel" id="publish">
+          <h2>איך מורה מכין ומפרסם תרגיל</h2>
+          <div class="steps">
+            <article class="step">
+              <div>
+                <h3>בנה או תקן וורקפלו</h3>
+                <p>
+                  בנה את התהליך בתוך
+                  <code>n8n</code>
+                  והגדר אזור ברור שהתלמידים אמורים לשנות.
+                </p>
+              </div>
+            </article>
+            <article class="step">
+              <div>
+                <h3>ודא שהוובהוק מתאים לבדיקה</h3>
+                <p>לתרגיל הצאט בוט הנוכחי, ההגדרות צריכות להיות כך:</p>
+                <div class="codebox">HTTP Method: POST
+Path: after-class-support-chat
+Response Mode: When Last Node Finishes</div>
+              </div>
+            </article>
+            <article class="step">
+              <div>
+                <h3>ייצא את הקובץ</h3>
+                <p>
+                  מתוך
+                  <code>n8n</code>
+                  ייצא את הוורקפלו לקובץ
+                  <code>JSON</code>
+                  ושמור אותו במחשב.
+                </p>
+              </div>
+            </article>
+            <article class="step">
+              <div>
+                <h3>פרסם בפאנל המורה</h3>
+                <p>
+                  באתר לחץ כניסת מורה, היכנס עם הסיסמה, עבור להכנת שיעור, מלא שם ומטרה, והעלה את קובץ התרגיל.
+                </p>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="panel" id="live">
+          <h2>במהלך שיעור חי</h2>
+          <div class="check-grid">
+            <article class="check-card success">
+              <h3>מה המורה רואה</h3>
+              <p>תלמידים פעילים, הרצות מוצלחות, כשלונות, ובקשות עזרה.</p>
+            </article>
+            <article class="check-card warn">
+              <h3>מתי להתערב</h3>
+              <p>אם תלמיד נכשל פעמיים ברצף או ביקש עזרה, עוצרים אצלו בלבד ולא עוצרים את כל הכיתה.</p>
+            </article>
+            <article class="check-card">
+              <h3>איך לשמור קצב</h3>
+              <p>הדגמה קצרה, תיקון מודרך, בדיקה, ואז דיון קצר על התוצאה.</p>
+            </article>
+          </div>
+
+          <div class="flow">
+            <div class="flow-node">הדגמת מורה</div>
+            <div class="flow-node blue">תלמיד מוריד</div>
+            <div class="flow-node gold">תלמיד מתקן</div>
+            <div class="flow-node">תלמיד בודק</div>
+            <div class="flow-node red">מורה רואה חיווי</div>
+          </div>
+        </section>
+
+        <section class="panel" id="errors">
+          <h2>טבלת תקלות מהירה</h2>
+          <div class="grid-2">
+            <article class="mini-card danger">
+              <h3>שגיאת הרשאות בגוגל</h3>
+              <p>
+                אם מופיעה הודעה על
+                <code>UrlFetchApp.fetch</code>
+                צריך לאשר הרשאת קריאה חיצונית בסקריפט.
+              </p>
+            </article>
+            <article class="mini-card danger">
+              <h3>שגיאת וובהוק לא רשום</h3>
+              <p>
+                אם מתקבלת שגיאת
+                <code>404</code>
+                ודא שהוורקפלו פעיל ושהנתיב והשיטה תואמים.
+              </p>
+            </article>
+            <article class="mini-card warn">
+              <h3>שגיאת נוד תגובה</h3>
+              <p>
+                אם מופיע
+                <code>Unused Respond to Webhook</code>
+                מחק את נוד התגובה הנפרד והשתמש בתגובה מהנוד האחרון.
+              </p>
+            </article>
+            <article class="mini-card">
+              <h3>תלמיד לא רואה תרגיל נכון</h3>
+              <p>ודא שהמורה פרסם את הקובץ הנכון, או שהורדת ברירת המחדל עודכנה באתר.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2>רשימת סגירה לפני פתיחת כיתה</h2>
+          <div class="check-grid">
+            <article class="check-card">אתר פתוח לתלמידים</article>
+            <article class="check-card">סביבת <code>n8n</code> פתוחה</article>
+            <article class="check-card">וורקפלו פעיל</article>
+            <article class="check-card">בדיקה אחת הצליחה</article>
+            <article class="check-card">מעבדה חיה נקייה</article>
+            <article class="check-card">קישור נשלח לכיתה</article>
+          </div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>
