@@ -131,6 +131,7 @@ function route(action, data) {
   if (action === 'state') return getState(data.sessionCode);
   if (action === 'join') return joinSession(data);
   if (action === 'createRun') return createRun(data);
+  if (action === 'reportRun') return reportRun(data);
   if (action === 'requestHelp') return requestHelp(data);
   if (action === 'createSession') return createSession(data);
   return { ok: false, error: 'Unknown action: ' + action };
@@ -194,6 +195,34 @@ function createRun(data) {
 
   appendObject(SHEETS.runs, run);
   return { ok: true, run };
+}
+
+function reportRun(data) {
+  const sessions = readObjects(SHEETS.sessions);
+  const session = data.sessionId
+    ? sessions.find((row) => row.id === data.sessionId)
+    : sessions.find((row) => row.code === data.sessionCode) || sessions.find((row) => row.status === 'active');
+
+  if (!session) return { ok: false, error: 'No matching session found' };
+
+  const actorName = data.actorName || data.studentName || 'Teacher';
+  const workflowName = data.workflowName || 'n8n workflow';
+  const status = data.status || 'success';
+  const message = data.message || `${workflowName} reported ${status}`;
+
+  const run = {
+    id: 'run-' + Date.now(),
+    session_id: session.id,
+    student_id: actorName,
+    exercise_id: session.active_exercise_id || data.exerciseId || '',
+    workflow_id: data.workflowId || workflowName,
+    status,
+    message: `${workflowName}: ${message}`,
+    created_at: new Date(),
+  };
+
+  appendObject(SHEETS.runs, run);
+  return { ok: true, run, session };
 }
 
 function requestHelp(data) {

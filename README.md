@@ -111,6 +111,7 @@ after-class-ai/
 - [ערכת הרצה לחניך](docs/student-kit.md)
 - [תוכנית חינמית שלב אחר שלב](docs/free-first-step-plan.md)
 - [תוכנית הרצה עד מחר בבוקר](docs/tonight-launch-runbook.md)
+- [הצגת הרצות מתוך n8n בממשק](docs/n8n-live-reporting.md)
 - [Roadmap](docs/roadmap.md)
 
 ## מצגת למורה
