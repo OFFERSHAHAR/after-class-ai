@@ -38,6 +38,7 @@ const helpButton = document.querySelector("#helpRequest");
 const downloadButton = document.querySelector("#downloadWorkflow");
 const testChatbotButton = document.querySelector("#testChatbot");
 const chatbotResult = document.querySelector("#chatbotResult");
+const openN8nLink = document.querySelector("#openN8n");
 const roleLabel = document.querySelector("#roleLabel");
 const pageTitle = document.querySelector("#pageTitle");
 const currentExerciseName = document.querySelector("#currentExerciseName");
@@ -53,6 +54,10 @@ const lessonPreviewGoal = document.querySelector("#lessonPreviewGoal");
 
 sessionCodeInput.value = defaultSessionCode;
 webhookUrlInput.value = config.n8nWebhookUrl || "";
+if (openN8nLink) {
+  const workspaceUrl = config.n8nWorkspaceUrl || (config.n8nWebhookUrl || "").replace(/\/webhook.*$/, "") || "http://127.0.0.1:5678";
+  openN8nLink.href = workspaceUrl;
+}
 
 function setConnection(message, status = "") {
   connectionNote.textContent = message;

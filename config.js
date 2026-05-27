@@ -5,5 +5,6 @@ window.AFTER_CLASS_AI_CONFIG = {
   refreshSeconds: 10,
   currentWorkflowName: "customer-service-chatbot-demo.json",
   currentWorkflowUrl: "workflows/current-class-workflow.json",
+  n8nWorkspaceUrl: "https://unallowable-lustrelessly-pok.ngrok-free.dev",
   n8nWebhookUrl: "https://unallowable-lustrelessly-pok.ngrok-free.dev/webhook/after-class-support-chat"
 };
