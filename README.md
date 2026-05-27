@@ -88,6 +88,7 @@ after-class-ai/
     start-ui-only.bat
     run-ui-server.bat
     run-n8n-server.bat
+    open-workflows-folder.bat
   teacher-pitch/
     index.html
     pitch.css
@@ -119,6 +120,7 @@ after-class-ai/
 - [הצגת הרצות מתוך n8n בממשק](docs/n8n-live-reporting.md)
 - [שרת כיתה להרצת הממשק ו-n8n](docs/classroom-server.md)
 - [התמונה המלאה של חוויית מורה ותלמיד](docs/full-classroom-experience.md)
+- [זרימת עבודה אמיתית לשיעור](docs/real-class-workflow-flow.md)
 - [Roadmap](docs/roadmap.md)
 
 ## מצגת למורה

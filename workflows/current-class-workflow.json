@@ -1,0 +1,66 @@
+{
+  "name": "After Class AI - Current Class Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "after-class-lead",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "webhook-lead-input",
+      "name": "Lead Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "webhookId": "after-class-lead"
+    },
+    {
+      "parameters": {
+        "jsCode": "const lead = $json.body || $json;\n// STUDENT EDIT AREA:\n// Change the scoring rule below.\nconst score = lead.message && lead.message.length > 80 ? 'high' : 'medium';\nreturn [{ json: { ...lead, ai_priority: score, classroom_note: 'Student edited classifier' } }];"
+      },
+      "id": "student-edit-area",
+      "name": "Student Edit Area",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [520, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}"
+      },
+      "id": "respond-to-student",
+      "name": "Return Result",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [800, 300]
+    }
+  ],
+  "connections": {
+    "Lead Webhook": {
+      "main": [
+        [
+          {
+            "node": "Student Edit Area",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Student Edit Area": {
+      "main": [
+        [
+          {
+            "node": "Return Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

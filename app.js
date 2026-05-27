@@ -249,8 +249,8 @@ document.querySelector("#studentRun").addEventListener("click", async () => {
 
 document.querySelector("#downloadWorkflow").addEventListener("click", () => {
   const link = document.createElement("a");
-  link.href = "workflows/lead-bot-template.json";
-  link.download = "after-class-ai-lead-bot-template.json";
+  link.href = config.currentWorkflowUrl || "workflows/current-class-workflow.json";
+  link.download = config.currentWorkflowName || "after-class-current-workflow.json";
   document.body.appendChild(link);
   link.click();
   link.remove();
@@ -260,7 +260,7 @@ document.querySelector("#downloadWorkflow").addEventListener("click", () => {
     icon: "…",
     name: "תלמיד",
     title: "הורדת תבנית",
-    detail: "קובץ התרגיל ירד למחשב וניתן לייבא אותו לתוך n8n.",
+    detail: "קובץ התרגיל הנוכחי ירד למחשב וניתן לייבא אותו לתוך n8n.",
   });
 });
 
