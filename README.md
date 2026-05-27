@@ -122,6 +122,7 @@ after-class-ai/
 - [התמונה המלאה של חוויית מורה ותלמיד](docs/full-classroom-experience.md)
 - [זרימת עבודה אמיתית לשיעור](docs/real-class-workflow-flow.md)
 - [הפעלה בלחיצה אחת לשיעור](docs/tomorrow-class-one-click.md)
+- [בדיקת קצה לקצה למורה ואור](docs/end-to-end-test-or-teacher.md)
 - [Roadmap](docs/roadmap.md)
 
 ## מצגת למורה
