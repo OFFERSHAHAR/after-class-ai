@@ -48,6 +48,18 @@ runs
 help_requests
 ```
 
+אפשר גם להקים הכל אוטומטית דרך Apps Script:
+
+```javascript
+setupAfterClassSheets()
+```
+
+הפקודה תיצור ותעצב את הלשוניות. פירוט מלא נמצא כאן:
+
+```text
+docs/sheets-setup-command.md
+```
+
 ## sessions
 
 לשונית שיעורים.

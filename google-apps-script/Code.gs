@@ -8,6 +8,110 @@ const SHEETS = {
 
 const SPREADSHEET_ID = '19GOHx2oq1ZsnkggJ-r-8TGvYvhYle3sAWifAzmL-rwQ_';
 
+const BRAND = {
+  black: '#111111',
+  red: '#D40000',
+  deepRed: '#8B0000',
+  gold: '#D6A21E',
+  cream: '#FFF8E7',
+  silver: '#E5E7EB',
+  graphite: '#2B2B2B',
+  green: '#138A36',
+  orange: '#C66A00',
+  blue: '#1F5FBF',
+};
+
+const SHEET_SCHEMAS = {
+  dashboard: {
+    headers: ['metric', 'value', 'note'],
+    rows: [
+      ['Active session', '=IFERROR(INDEX(FILTER(sessions!C2:C,sessions!G2:G="active"),1),"No active session")', 'Current open class'],
+      ['Active students', '=COUNTIF(students!G2:G,"active")', 'Students currently in lab'],
+      ['Successful runs', '=COUNTIF(runs!F2:F,"success")', 'All recorded successes'],
+      ['Open help requests', '=COUNTIF(help_requests!E2:E,"open")', 'Students waiting for help'],
+      ['Last run', '=IFERROR(INDEX(SORT(runs!H2:H,runs!H2:H,FALSE),1),"No runs yet")', 'Most recent execution'],
+    ],
+  },
+  sessions: {
+    headers: ['id', 'code', 'title', 'date', 'teacher', 'active_exercise_id', 'status', 'join_open'],
+    rows: [
+      ['session-001', 'AI-203', 'Webhooks and AI', new Date(), 'Teacher', 'exercise-lead-bot', 'active', true],
+    ],
+  },
+  students: {
+    headers: ['id', 'session_id', 'name', 'joined_at', 'workflow_id', 'workflow_url', 'status'],
+    rows: [
+      ['student-001', 'session-001', 'Noa', new Date(), '123', 'http://127.0.0.1:5678/workflow/123', 'active'],
+    ],
+  },
+  exercises: {
+    headers: ['id', 'title', 'level', 'description', 'template_file', 'status'],
+    rows: [
+      ['exercise-lead-bot', 'Lead Bot', 'Intermediate', 'Webhook classifies a lead and returns a result', 'workflows/lead-bot-template.json', 'active'],
+      ['exercise-webhook-echo', 'Webhook Echo', 'Beginner', 'Receive JSON and return a clean response', 'workflows/webhook-echo-template.json', 'active'],
+      ['exercise-ticket-router', 'Ticket Router', 'Business', 'Route tickets by topic and urgency', 'workflows/ticket-router-template.json', 'active'],
+    ],
+  },
+  runs: {
+    headers: ['id', 'session_id', 'student_id', 'exercise_id', 'workflow_id', 'status', 'message', 'created_at'],
+    rows: [
+      ['run-001', 'session-001', 'student-001', 'exercise-lead-bot', '123', 'success', 'Webhook returned 200', new Date()],
+      ['run-002', 'session-001', 'student-001', 'exercise-lead-bot', '123', 'running', 'Testing payload validation', new Date()],
+      ['run-003', 'session-001', 'student-001', 'exercise-lead-bot', '123', 'failed', 'Missing email field in JSON', new Date()],
+    ],
+  },
+  help_requests: {
+    headers: ['id', 'session_id', 'student_id', 'reason', 'status', 'created_at', 'resolved_at'],
+    rows: [
+      ['help-001', 'session-001', 'student-001', 'credentials error', 'open', new Date(), ''],
+    ],
+  },
+};
+
+function onOpen() {
+  SpreadsheetApp.getUi()
+    .createMenu('After Class AI')
+    .addItem('Setup / reset sheets', 'setupAfterClassSheets')
+    .addItem('Refresh Ferrari styling', 'styleAfterClassSheets')
+    .addToUi();
+}
+
+function setupAfterClassSheets() {
+  const spreadsheet = getSpreadsheet();
+
+  Object.keys(SHEET_SCHEMAS).forEach((sheetName) => {
+    const schema = SHEET_SCHEMAS[sheetName];
+    const sheet = getOrCreateSheet(spreadsheet, sheetName);
+    sheet.clear();
+    sheet.clearConditionalFormatRules();
+    sheet.getRange(1, 1, 1, schema.headers.length).setValues([schema.headers]);
+
+    if (schema.rows.length) {
+      sheet.getRange(2, 1, schema.rows.length, schema.headers.length).setValues(schema.rows);
+    }
+  });
+
+  styleAfterClassSheets();
+  addValidations();
+  SpreadsheetApp.flush();
+  return 'After Class AI sheets were created and styled.';
+}
+
+function styleAfterClassSheets() {
+  const spreadsheet = getSpreadsheet();
+  const order = ['dashboard', 'sessions', 'students', 'exercises', 'runs', 'help_requests'];
+
+  order.forEach((sheetName, index) => {
+    const sheet = spreadsheet.getSheetByName(sheetName);
+    if (!sheet) return;
+    spreadsheet.setActiveSheet(sheet);
+    spreadsheet.moveActiveSheet(index + 1);
+    styleSheet(sheet, sheetName);
+  });
+
+  styleDashboard(spreadsheet.getSheetByName('dashboard'));
+}
+
 function doGet(event) {
   const action = event.parameter.action || 'state';
   const payload = route(action, event.parameter);
@@ -157,6 +261,156 @@ function jsonResponse(payload) {
 
 function getSpreadsheet() {
   return SpreadsheetApp.openById(SPREADSHEET_ID);
+}
+
+function getOrCreateSheet(spreadsheet, sheetName) {
+  return spreadsheet.getSheetByName(sheetName) || spreadsheet.insertSheet(sheetName);
+}
+
+function styleSheet(sheet, sheetName) {
+  const lastColumn = Math.max(sheet.getLastColumn(), 1);
+  const lastRow = Math.max(sheet.getLastRow(), 1);
+  const fullRange = sheet.getRange(1, 1, Math.max(lastRow, 50), lastColumn);
+  const header = sheet.getRange(1, 1, 1, lastColumn);
+
+  sheet.setFrozenRows(1);
+  sheet.setHiddenGridlines(true);
+  try {
+    sheet.setRightToLeft(false);
+  } catch (error) {
+    // Older Sheets runtimes may not expose RTL controls on Sheet.
+  }
+
+  fullRange
+    .setFontFamily('Arial')
+    .setFontSize(10)
+    .setVerticalAlignment('middle')
+    .setWrap(true);
+
+  header
+    .setBackground(BRAND.black)
+    .setFontColor('#FFFFFF')
+    .setFontWeight('bold')
+    .setFontSize(11)
+    .setBorder(true, true, true, true, true, true, BRAND.gold, SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
+
+  if (lastRow > 1) {
+    sheet.getRange(2, 1, lastRow - 1, lastColumn)
+      .setBackground(BRAND.cream)
+      .setFontColor(BRAND.graphite)
+      .setBorder(true, true, true, true, true, true, '#F0E4C4', SpreadsheetApp.BorderStyle.SOLID);
+  }
+
+  sheet.autoResizeColumns(1, lastColumn);
+  for (let column = 1; column <= lastColumn; column += 1) {
+    const width = Math.min(Math.max(sheet.getColumnWidth(column), 120), 260);
+    sheet.setColumnWidth(column, width);
+  }
+  sheet.setRowHeights(1, Math.max(lastRow, 20), 30);
+  sheet.setRowHeight(1, 38);
+  const existingFilter = sheet.getFilter();
+  if (existingFilter) existingFilter.remove();
+  sheet.getDataRange().createFilter();
+  addStatusFormatting(sheet, sheetName);
+}
+
+function styleDashboard(sheet) {
+  if (!sheet) return;
+
+  sheet.getRange('A1:C1')
+    .setBackground(BRAND.deepRed)
+    .setFontColor('#FFFFFF')
+    .setFontWeight('bold')
+    .setFontSize(12);
+
+  sheet.getRange('A2:C6')
+    .setBackground('#FFFFFF')
+    .setBorder(true, true, true, true, true, true, BRAND.silver, SpreadsheetApp.BorderStyle.SOLID);
+
+  sheet.getRange('B2:B6')
+    .setBackground(BRAND.black)
+    .setFontColor(BRAND.gold)
+    .setFontWeight('bold')
+    .setFontSize(13);
+
+  sheet.setColumnWidth(1, 180);
+  sheet.setColumnWidth(2, 220);
+  sheet.setColumnWidth(3, 260);
+}
+
+function addStatusFormatting(sheet, sheetName) {
+  const statusColumnBySheet = {
+    sessions: 7,
+    students: 7,
+    exercises: 6,
+    runs: 6,
+    help_requests: 5,
+  };
+  const statusColumn = statusColumnBySheet[sheetName];
+  if (!statusColumn) return;
+
+  const range = sheet.getRange(2, statusColumn, Math.max(sheet.getMaxRows() - 1, 1), 1);
+  const rules = [
+    SpreadsheetApp.newConditionalFormatRule()
+      .whenTextEqualTo('active')
+      .setBackground('#E7F6EC')
+      .setFontColor(BRAND.green)
+      .setRanges([range])
+      .build(),
+    SpreadsheetApp.newConditionalFormatRule()
+      .whenTextEqualTo('success')
+      .setBackground('#E7F6EC')
+      .setFontColor(BRAND.green)
+      .setRanges([range])
+      .build(),
+    SpreadsheetApp.newConditionalFormatRule()
+      .whenTextEqualTo('running')
+      .setBackground('#EAF1FF')
+      .setFontColor(BRAND.blue)
+      .setRanges([range])
+      .build(),
+    SpreadsheetApp.newConditionalFormatRule()
+      .whenTextEqualTo('open')
+      .setBackground('#FFE9E9')
+      .setFontColor(BRAND.red)
+      .setRanges([range])
+      .build(),
+    SpreadsheetApp.newConditionalFormatRule()
+      .whenTextEqualTo('failed')
+      .setBackground('#FFE9E9')
+      .setFontColor(BRAND.red)
+      .setRanges([range])
+      .build(),
+    SpreadsheetApp.newConditionalFormatRule()
+      .whenTextEqualTo('closed')
+      .setBackground('#F3F4F6')
+      .setFontColor('#6B7280')
+      .setRanges([range])
+      .build(),
+  ];
+  sheet.setConditionalFormatRules(rules);
+}
+
+function addValidations() {
+  const spreadsheet = getSpreadsheet();
+  const validations = [
+    { sheet: 'sessions', range: 'G2:G', values: ['draft', 'active', 'closed'] },
+    { sheet: 'sessions', range: 'H2:H', values: ['TRUE', 'FALSE'] },
+    { sheet: 'students', range: 'G2:G', values: ['active', 'done', 'inactive'] },
+    { sheet: 'exercises', range: 'F2:F', values: ['active', 'archived'] },
+    { sheet: 'runs', range: 'F2:F', values: ['running', 'success', 'failed'] },
+    { sheet: 'help_requests', range: 'E2:E', values: ['open', 'in_progress', 'resolved'] },
+  ];
+
+  validations.forEach((item) => {
+    const sheet = spreadsheet.getSheetByName(item.sheet);
+    if (!sheet) return;
+    const rule = SpreadsheetApp.newDataValidation()
+      .requireValueInList(item.values, true)
+      .setAllowInvalid(false)
+      .build();
+    sheet.getRange(item.range).setDataValidation(rule);
+  });
 }
 
 function createCode() {

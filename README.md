@@ -98,6 +98,7 @@ after-class-ai/
 - [הצעה למורה](docs/teacher-proposal.md)
 - [מדריך תפעול למורה ותלמידים](docs/teacher-operations-guide.md)
 - [Google Sheets כ-backend זמני](docs/google-sheets-backend.md)
+- [פקודת הקמת Google Sheets](docs/sheets-setup-command.md)
 - [ערכת הרצה לחניך](docs/student-kit.md)
 - [Roadmap](docs/roadmap.md)
 

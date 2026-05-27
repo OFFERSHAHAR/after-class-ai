@@ -27,3 +27,11 @@ https://docs.google.com/spreadsheets/d/19GOHx2oq1ZsnkggJ-r-8TGvYvhYle3sAWifAzmL-
 ```text
 google-apps-script/Code.gs
 ```
+
+לאחר מכן הרץ את הפונקציה:
+
+```javascript
+setupAfterClassSheets()
+```
+
+היא תיצור את הלשוניות, תכניס נתוני דמו ותעצב את ה-Sheet.
