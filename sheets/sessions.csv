@@ -1,0 +1,3 @@
+id,code,title,date,teacher,active_exercise_id,status,join_open
+session-001,AI-203,Webhooks ו-AI,2026-05-27,Teacher,exercise-lead-bot,active,TRUE
+

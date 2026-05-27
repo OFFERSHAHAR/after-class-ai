@@ -14,6 +14,7 @@
 - תיעוד מוצר ראשוני
 - קובץ Docker Compose עתידי להרצת n8n מקומי
 - דוגמת workflow לייבוא ל-n8n
+- תכנון ותבניות Google Sheets כ-backend זמני ל-MVP
 
 ## הרצה מקומית של הממשק
 
@@ -65,7 +66,12 @@ after-class-ai/
   docs/
     interface-brief.md
     teacher-operations-guide.md
+    google-sheets-backend.md
     roadmap.md
+  google-apps-script/
+    Code.gs
+  sheets/
+    *.csv
   workflows/
     lead-bot-template.json
 ```
@@ -84,6 +90,7 @@ after-class-ai/
 
 - [פירוט ממשק וחזון](docs/interface-brief.md)
 - [מדריך תפעול למורה ותלמידים](docs/teacher-operations-guide.md)
+- [Google Sheets כ-backend זמני](docs/google-sheets-backend.md)
 - [Roadmap](docs/roadmap.md)
 
 ## סטטוס

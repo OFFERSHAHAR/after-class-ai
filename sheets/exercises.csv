@@ -1,0 +1,5 @@
+id,title,level,description,template_file,status
+exercise-lead-bot,Lead Bot,ביניים,Webhook שמסווג ליד,workflows/lead-bot-template.json,active
+exercise-webhook-echo,Webhook Echo,מתחילים,קבלת JSON והחזרת תשובה,workflows/webhook-echo-template.json,active
+exercise-ticket-router,Ticket Router,ארגוני,ניתוב פניות לפי נושא ודחיפות,workflows/ticket-router-template.json,active
+
