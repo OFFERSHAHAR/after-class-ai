@@ -6,6 +6,8 @@ const SHEETS = {
   helpRequests: 'help_requests',
 };
 
+const SPREADSHEET_ID = '19GOHx2oq1ZsnkggJ-r-8TGvYvhYle3sAWifAzmL-rwQ_';
+
 function doGet(event) {
   const action = event.parameter.action || 'state';
   const payload = route(action, event.parameter);
@@ -122,7 +124,7 @@ function createSession(data) {
 }
 
 function readObjects(sheetName) {
-  const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
+  const sheet = getSpreadsheet().getSheetByName(sheetName);
   if (!sheet) throw new Error('Missing sheet: ' + sheetName);
 
   const values = sheet.getDataRange().getValues();
@@ -139,7 +141,7 @@ function readObjects(sheetName) {
 }
 
 function appendObject(sheetName, object) {
-  const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
+  const sheet = getSpreadsheet().getSheetByName(sheetName);
   if (!sheet) throw new Error('Missing sheet: ' + sheetName);
 
   const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
@@ -153,7 +155,10 @@ function jsonResponse(payload) {
     .setMimeType(ContentService.MimeType.JSON);
 }
 
+function getSpreadsheet() {
+  return SpreadsheetApp.openById(SPREADSHEET_ID);
+}
+
 function createCode() {
   return 'AI-' + Math.floor(100 + Math.random() * 900);
 }
-

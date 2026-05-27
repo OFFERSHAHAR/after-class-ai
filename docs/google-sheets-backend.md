@@ -26,6 +26,18 @@
 After Class AI - Data
 ```
 
+ה-Sheet שהוגדר לפרויקט:
+
+```text
+19GOHx2oq1ZsnkggJ-r-8TGvYvhYle3sAWifAzmL-rwQ_
+```
+
+קישור ישיר:
+
+```text
+https://docs.google.com/spreadsheets/d/19GOHx2oq1ZsnkggJ-r-8TGvYvhYle3sAWifAzmL-rwQ_/edit
+```
+
 ובתוכו יוצרים 5 לשוניות:
 
 ```text
@@ -172,6 +184,14 @@ help_requests
 
 היתרון: לא צריך להכניס Google API keys לדפדפן.
 
+בקובץ `google-apps-script/Code.gs` כבר מוגדר:
+
+```javascript
+const SPREADSHEET_ID = '19GOHx2oq1ZsnkggJ-r-8TGvYvhYle3sAWifAzmL-rwQ_';
+```
+
+אם מעבירים את הפרויקט ל-Sheet אחר, מחליפים רק את הערך הזה.
+
 ## מגבלות
 
 Sheets טוב ל-MVP, אבל לא למערכת גדולה:
@@ -182,4 +202,3 @@ Sheets טוב ל-MVP, אבל לא למערכת גדולה:
 - לא מתאים לעשרות כיתות במקביל בלי תכנון
 
 לשלב ראשון עם מורה, קבוצה קטנה ותרגול חי, זה מספיק טוב.
-
