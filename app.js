@@ -346,6 +346,22 @@ function updateDashboardFromRemote(payload) {
   needsHelp.textContent = allHelpRequests.length;
 
   feedItems.length = 0;
+  students
+    .filter((student) => student.status === "active" && isAfterFeedClear(student.joined_at))
+    .slice()
+    .sort((a, b) => new Date(b.joined_at || 0) - new Date(a.joined_at || 0))
+    .slice(0, 5)
+    .forEach((student) => {
+      feedItems.push({
+        status: "run",
+        icon: "+",
+        name: student.name || "תלמיד",
+        title: "הצטרף למעבדה",
+        detail: "המשתמש מחובר לשיעור ויכול להתחיל לתרגל.",
+        time: formatTime(student.joined_at),
+      });
+    });
+
   runs.slice(0, 8).forEach((run) => {
     feedItems.push({
       status: run.status === "success" ? "ok" : run.status === "failed" ? "help" : "run",
@@ -677,6 +693,13 @@ document.querySelector("#joinLab").addEventListener("click", async () => {
     localStorage.setItem("afterClassStudent", JSON.stringify(state.student));
     showToast(`שלום ${name}`, "המעבדה זיהתה אותך. סוכן התרגול מוכן להפעיל את מסלול הלמידה שלך.");
     setAction("הצטרפת במצב דמו.", "success");
+    pushFeed({
+      status: "run",
+      icon: "+",
+      name,
+      title: "הצטרף למעבדה",
+      detail: "המשתמש מחובר ומוכן להתחיל לתרגל.",
+    });
     joinButton.textContent = "מחובר";
     joinButton.disabled = true;
     return;
