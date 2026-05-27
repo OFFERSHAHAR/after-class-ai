@@ -75,7 +75,11 @@ after-class-ai/
     *.csv
   student-kit/
     run-local.bat
+    run-with-ngrok.bat
+    config/
+    payloads/
     templates/
+    tools/
     my-workflows/
     notes/
   workflows/

@@ -1,0 +1,10 @@
+{
+  "name": "After Class AI Student Kit",
+  "localPort": 5180,
+  "defaultN8nUrl": "http://127.0.0.1:5678",
+  "allowNgrok": false,
+  "templatesPath": "templates",
+  "personalWorkflowsPath": "my-workflows",
+  "notesPath": "notes",
+  "payloadsPath": "payloads"
+}
