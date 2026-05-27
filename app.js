@@ -42,13 +42,34 @@ const activeStudents = document.querySelector("#activeStudents");
 const successRuns = document.querySelector("#successRuns");
 const needsHelp = document.querySelector("#needsHelp");
 const connectionNote = document.querySelector("#connectionNote");
+const studentActionNote = document.querySelector("#studentActionNote");
 const sessionCodeInput = document.querySelector("#sessionCode");
+const joinButton = document.querySelector("#joinLab");
+const runButton = document.querySelector("#studentRun");
+const helpButton = document.querySelector("#helpRequest");
+const downloadButton = document.querySelector("#downloadWorkflow");
 
 sessionCodeInput.value = defaultSessionCode;
 
 function setConnection(message, status = "") {
   connectionNote.textContent = message;
   connectionNote.className = `connection-note ${status}`.trim();
+}
+
+function setAction(message, status = "") {
+  studentActionNote.textContent = message;
+  studentActionNote.className = `action-note ${status}`.trim();
+}
+
+function setButtonBusy(button, busyText) {
+  if (!button) return () => {};
+  const originalText = button.textContent;
+  button.disabled = true;
+  button.textContent = busyText;
+  return () => {
+    button.disabled = false;
+    button.textContent = originalText;
+  };
 }
 
 function renderFeed() {
@@ -220,34 +241,49 @@ document.querySelectorAll(".nav-item").forEach((button) => {
 document.querySelector("#simulateRun").addEventListener("click", () => addDemoRun());
 
 document.querySelector("#studentRun").addEventListener("click", async () => {
+  const release = setButtonBusy(runButton, "רושם הרצה...");
+  setAction("רושם הרצה בלוח הכיתה...", "busy");
   const name = document.querySelector("#studentName").value.trim() || "תלמיד/ה";
 
   if (!apiUrl || !state.session || !state.student) {
     addDemoRun(name);
+    setAction("הרצת דמו נרשמה.", "success");
+    release();
     return;
   }
 
-  const payload = await callApi("createRun", {
-    sessionId: state.session.id,
-    studentId: state.student.id,
-    exerciseId: state.session.active_exercise_id || "exercise-lead-bot",
-    status: "success",
-    message: "התלמיד סימן הרצה מוצלחת מהממשק",
-  });
-
-  if (payload.ok) {
-    pushFeed({
-      status: "ok",
-      icon: "✓",
-      name,
-      title: "הרצה נרשמה בגיליון",
-      detail: "המורה יראה את ההרצה בלוח הכיתה.",
+  try {
+    const payload = await callApi("createRun", {
+      sessionId: state.session.id,
+      studentId: state.student.id,
+      exerciseId: state.session.active_exercise_id || "exercise-lead-bot",
+      status: "success",
+      message: "התלמיד סימן הרצה מוצלחת מהממשק",
     });
-    await refreshState();
+
+    if (payload.ok) {
+      pushFeed({
+        status: "ok",
+        icon: "✓",
+        name,
+        title: "הרצה נרשמה בגיליון",
+        detail: "המורה יראה את ההרצה בלוח הכיתה.",
+      });
+      setAction("ההרצה נרשמה בהצלחה.", "success");
+      await refreshState();
+    } else {
+      setAction(payload.error || "ההרצה לא נרשמה.", "error");
+    }
+  } catch (error) {
+    setAction(error.message, "error");
+  } finally {
+    release();
   }
 });
 
 document.querySelector("#downloadWorkflow").addEventListener("click", () => {
+  const release = setButtonBusy(downloadButton, "מוריד...");
+  setAction("מוריד את תרגיל הכיתה הנוכחי...", "busy");
   const link = document.createElement("a");
   link.href = config.currentWorkflowUrl || "workflows/current-class-workflow.json";
   link.download = config.currentWorkflowName || "after-class-current-workflow.json";
@@ -262,14 +298,24 @@ document.querySelector("#downloadWorkflow").addEventListener("click", () => {
     title: "הורדת תבנית",
     detail: "קובץ התרגיל הנוכחי ירד למחשב וניתן לייבא אותו לתוך n8n.",
   });
+  setAction("קובץ התרגיל הורד למחשב.", "success");
+  window.setTimeout(release, 800);
 });
 
 document.querySelector("#joinLab").addEventListener("click", async () => {
+  if (state.student) {
+    setAction("כבר הצטרפת לשיעור. אין צורך ללחוץ שוב.", "success");
+    return;
+  }
+
+  const release = setButtonBusy(joinButton, "מצטרף...");
+  setAction("מצרף אותך לשיעור ורושם בגיליון...", "busy");
   const name = document.querySelector("#studentName").value.trim() || "תלמיד/ה";
   const sessionCode = sessionCodeInput.value.trim() || defaultSessionCode;
 
   if (!apiUrl) {
     activeStudents.textContent = Number(activeStudents.textContent) + 1;
+    state.student = { id: `demo-${Date.now()}`, name };
     pushFeed({
       status: "run",
       icon: "…",
@@ -277,6 +323,8 @@ document.querySelector("#joinLab").addEventListener("click", async () => {
       title: "הצטרפות למעבדה",
       detail: "מצב דמו. בגירסה המחוברת זה יירשם בגיליון.",
     });
+    setAction("הצטרפת במצב דמו.", "success");
+    joinButton.textContent = "הצטרפת";
     return;
   }
 
@@ -290,6 +338,9 @@ document.querySelector("#joinLab").addEventListener("click", async () => {
     state.student = payload.student;
     state.session = payload.session;
     setConnection("הצטרפת לשיעור. הפעילות שלך נשמרת בגיליון.", "connected");
+    setAction("הצטרפת בהצלחה. אפשר להוריד תרגיל או להריץ.", "success");
+    joinButton.textContent = "הצטרפת";
+    joinButton.disabled = true;
     pushFeed({
       status: "run",
       icon: "…",
@@ -300,10 +351,14 @@ document.querySelector("#joinLab").addEventListener("click", async () => {
     await refreshState();
   } catch (error) {
     setConnection(error.message, "error");
+    setAction(error.message, "error");
+    release();
   }
 });
 
 document.querySelector("#helpRequest").addEventListener("click", async () => {
+  const release = setButtonBusy(helpButton, "שולח עזרה...");
+  setAction("שולח בקשת עזרה למורה...", "busy");
   const name = document.querySelector("#studentName").value.trim() || "תלמיד/ה";
 
   if (!apiUrl || !state.session || !state.student) {
@@ -315,24 +370,35 @@ document.querySelector("#helpRequest").addEventListener("click", async () => {
       title: "בקשת עזרה",
       detail: "מצב דמו. בגירסה המחוברת זה יירשם בגיליון.",
     });
+    setAction("בקשת עזרה נרשמה במצב דמו.", "success");
+    release();
     return;
   }
 
-  const payload = await callApi("requestHelp", {
-    sessionId: state.session.id,
-    studentId: state.student.id,
-    reason: "התלמיד ביקש עזרה מהממשק",
-  });
-
-  if (payload.ok) {
-    pushFeed({
-      status: "help",
-      icon: "!",
-      name,
-      title: "בקשת עזרה נשלחה",
-      detail: "המורה יראה את הבקשה בלוח.",
+  try {
+    const payload = await callApi("requestHelp", {
+      sessionId: state.session.id,
+      studentId: state.student.id,
+      reason: "התלמיד ביקש עזרה מהממשק",
     });
-    await refreshState();
+
+    if (payload.ok) {
+      pushFeed({
+        status: "help",
+        icon: "!",
+        name,
+        title: "בקשת עזרה נשלחה",
+        detail: "המורה יראה את הבקשה בלוח.",
+      });
+      setAction("בקשת העזרה נשלחה למורה.", "success");
+      await refreshState();
+    } else {
+      setAction(payload.error || "בקשת העזרה לא נשלחה.", "error");
+    }
+  } catch (error) {
+    setAction(error.message, "error");
+  } finally {
+    release();
   }
 });
 

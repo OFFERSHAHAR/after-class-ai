@@ -7,3 +7,4 @@ dist/
 Thumbs.db
 *.log
 classroom-run/local-settings.cmd
+classroom-run/tools/ngrok.exe

@@ -391,6 +391,33 @@ button {
   color: #9a1f1f;
 }
 
+.action-note {
+  margin: 10px 0 0;
+  min-height: 24px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.action-note.success {
+  color: #136b3a;
+  font-weight: 700;
+}
+
+.action-note.error {
+  color: #9a1f1f;
+  font-weight: 700;
+}
+
+.action-note.busy {
+  color: #725100;
+  font-weight: 700;
+}
+
+button[disabled] {
+  cursor: wait;
+  opacity: 0.62;
+}
+
 .pill,
 .template-tag {
   display: inline-flex;
