@@ -138,3 +138,4 @@ http://127.0.0.1:5173/after-class-ai/teacher-pitch/
   classroom-run/
     START_CLASS_TOMORROW.bat
     SHOW_PUBLIC_LINKS.bat
+    SETUP_NGROK_AUTH.bat

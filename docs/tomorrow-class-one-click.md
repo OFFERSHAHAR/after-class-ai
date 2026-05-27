@@ -14,6 +14,44 @@ classroom-run
 START_CLASS_TOMORROW.bat
 ```
 
+לפני השיעור, אם עובדים עם מנהרה קבועה:
+
+1. שמים את:
+
+```text
+ngrok.exe
+```
+
+בתוך:
+
+```text
+classroom-run/tools
+```
+
+2. מריצים פעם אחת:
+
+```text
+SETUP_NGROK_AUTH.bat
+```
+
+3. מעתיקים:
+
+```text
+local-settings.example.cmd
+```
+
+לשם:
+
+```text
+local-settings.cmd
+```
+
+4. מוודאים שהדומיין הוא:
+
+```text
+unallowable-lustrelessly-pok.ngrok-free.dev
+```
+
 הקובץ מפעיל:
 
 - ממשק כיתה
@@ -106,4 +144,3 @@ CMD
 לא מבקשים ממנו להריץ פקודות.
 
 לא מבקשים ממנו להתקין סביבת עבודה.
-
