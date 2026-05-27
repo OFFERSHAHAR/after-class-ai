@@ -5,7 +5,7 @@
       "parameters": {
         "httpMethod": "POST",
         "path": "after-class-support-chat",
-        "responseMode": "lastNode",
+        "responseMode": "responseNode",
         "options": {}
       },
       "id": "support-chat-webhook",
