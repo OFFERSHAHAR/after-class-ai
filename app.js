@@ -58,6 +58,8 @@ const lessonGoal = document.querySelector("#lessonGoal");
 const guidedFix = document.querySelector("#guidedFix");
 const lessonPreviewTitle = document.querySelector("#lessonPreviewTitle");
 const lessonPreviewGoal = document.querySelector("#lessonPreviewGoal");
+const saveTemplateButton = document.querySelector("#saveTemplate");
+const teacherTemplateGrid = document.querySelector("#teacherTemplateGrid");
 const roleGate = document.querySelector("#roleGate");
 const enterStudentButton = document.querySelector("#enterStudent");
 const enterTeacherButton = document.querySelector("#enterTeacher");
@@ -297,6 +299,7 @@ function updateDashboardFromRemote(payload) {
 
   state.session = payload.session;
   state.activeExercise = payload.activeExercise || null;
+  renderTeacherTemplates(payload.exercises || []);
   const students = payload.students || [];
   const allRuns = payload.runs || [];
   const allHelpRequests = payload.helpRequests || [];
@@ -346,6 +349,26 @@ function updateDashboardFromRemote(payload) {
   renderFeed();
 }
 
+function renderTeacherTemplates(exercises) {
+  if (!teacherTemplateGrid) return;
+  const templates = exercises.filter((exercise) => exercise.workflow_json && exercise.status === "template").slice().reverse();
+  teacherTemplateGrid.innerHTML = templates
+    .map((template) => `
+      <article class="template-card">
+        <span class="template-tag">תבנית מורה</span>
+        <h3>${escapeHtml(template.title || "תבנית שיעור")}</h3>
+        <p>${escapeHtml(template.description || "תבנית שנשמרה על ידי המורה, כולל קובץ וורקפלו והנחיות שיעור.")}</p>
+        <button
+          class="small-btn template-download"
+          data-template-content="${encodeURIComponent(template.workflow_json)}"
+          data-template-name="${escapeHtml(template.workflow_file_name || template.template_file || "teacher-template.json")}"
+          type="button"
+        >הורד תבנית</button>
+      </article>
+    `)
+    .join("");
+}
+
 function formatTime(value) {
   if (!value) return "עכשיו";
   const date = new Date(value);
@@ -384,6 +407,27 @@ function downloadTextFile(fileName, text, type = "application/json") {
   link.remove();
 }
 
+function workflowWithLessonMetadata(workflowText) {
+  const workflow = JSON.parse(workflowText);
+  workflow.afterClassLesson = {
+    title: lessonTitle.value.trim(),
+    goal: lessonGoal.value.trim(),
+    guidedFix: guidedFix.value.trim(),
+    webhookUrl: webhookUrlInput.value.trim(),
+    savedAt: new Date().toISOString(),
+  };
+  return JSON.stringify(workflow, null, 2);
+}
+
+function escapeHtml(value) {
+  return String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
 function getPublishedWorkflow() {
   if (state.uploadedWorkflow) return state.uploadedWorkflow;
   if (state.activeExercise?.workflow_json) {
@@ -406,15 +450,23 @@ document.querySelectorAll(".nav-item").forEach((button) => {
   button.addEventListener("click", () => setView(button.dataset.view));
 });
 
-document.querySelectorAll(".template-download").forEach((button) => {
-  button.addEventListener("click", () => {
+document.addEventListener("click", (event) => {
+  const button = event.target.closest(".template-download");
+  if (!button) return;
+
+  if (button.dataset.templateContent) {
+    downloadTextFile(button.dataset.templateName || "teacher-template.json", decodeURIComponent(button.dataset.templateContent));
+    return;
+  }
+
+  if (button.dataset.templateUrl) {
     const link = document.createElement("a");
     link.href = button.dataset.templateUrl;
     link.download = button.dataset.templateName;
     document.body.appendChild(link);
     link.click();
     link.remove();
-  });
+  }
 });
 
 enterStudentButton.addEventListener("click", enterStudentMode);
@@ -751,6 +803,39 @@ document.querySelector("#publishLesson").addEventListener("click", async () => {
     });
   } catch (error) {
     setTeacherNote(error.message || "פרסום התרגיל נכשל.", "error");
+  } finally {
+    release();
+  }
+});
+
+saveTemplateButton.addEventListener("click", async () => {
+  updateLessonPreview();
+  if (!state.uploadedWorkflow) {
+    setTeacherNote("צריך להעלות קובץ וורקפלו לפני שמירה כתבנית.", "error");
+    return;
+  }
+
+  const release = setButtonBusy(saveTemplateButton, "שומר...");
+  try {
+    const workflowJson = workflowWithLessonMetadata(state.uploadedWorkflow.content);
+
+    if (apiUrl) {
+      await postFormApi("saveTemplate", {
+        title: lessonTitle.value.trim(),
+        goal: lessonGoal.value.trim(),
+        description: guidedFix.value.trim(),
+        webhookUrl: webhookUrlInput.value.trim(),
+        workflowFileName: state.uploadedWorkflow.name,
+        workflowJson,
+      });
+      await refreshState();
+    } else {
+      downloadTextFile(state.uploadedWorkflow.name, workflowJson);
+    }
+
+    setTeacherNote("התבנית נשמרה ותופיע בעמוד תבניות לתרגול.", "success");
+  } catch (error) {
+    setTeacherNote(error.message || "שמירת התבנית נכשלה.", "error");
   } finally {
     release();
   }

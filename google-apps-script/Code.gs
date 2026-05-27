@@ -152,6 +152,7 @@ function route(action, data) {
   if (action === 'reportRun') return reportRun(data);
   if (action === 'runN8nTest') return runN8nTest(data);
   if (action === 'publishExercise') return publishExercise(data);
+  if (action === 'saveTemplate') return saveTemplate(data);
   if (action === 'requestHelp') return requestHelp(data);
   if (action === 'createSession') return createSession(data);
   return { ok: false, error: 'Unknown action: ' + action };
@@ -411,6 +412,36 @@ function publishExercise(data) {
   return { ok: true, exercise, sessionId: session.id };
 }
 
+function saveTemplate(data) {
+  data = data || {};
+  ensureSheetColumns(SHEETS.exercises, SHEET_SCHEMAS.exercises.headers);
+
+  const workflowJson = data.workflowJson || '';
+  if (!workflowJson) return { ok: false, error: 'Missing workflow JSON' };
+
+  try {
+    JSON.parse(workflowJson);
+  } catch (error) {
+    return { ok: false, error: 'Workflow file is not valid JSON' };
+  }
+
+  const template = {
+    id: 'template-' + Date.now(),
+    title: data.title || data.workflowFileName || 'Teacher template',
+    level: data.level || 'Teacher',
+    description: data.description || data.goal || '',
+    template_file: data.workflowFileName || 'teacher-template.json',
+    status: 'template',
+    workflow_file_name: data.workflowFileName || 'teacher-template.json',
+    workflow_json: workflowJson,
+    webhook_url: data.webhookUrl || '',
+    published_at: new Date(),
+  };
+
+  appendObject(SHEETS.exercises, template);
+  return { ok: true, exercise: template };
+}
+
 function readObjects(sheetName) {
   const sheet = getSpreadsheet().getSheetByName(sheetName);
   if (!sheet) throw new Error('Missing sheet: ' + sheetName);
@@ -627,7 +658,7 @@ function addValidations() {
     { sheet: 'sessions', range: 'G2:G', values: ['draft', 'active', 'closed'] },
     { sheet: 'sessions', range: 'H2:H', values: ['TRUE', 'FALSE'] },
     { sheet: 'students', range: 'G2:G', values: ['active', 'done', 'inactive'] },
-    { sheet: 'exercises', range: 'F2:F', values: ['active', 'archived'] },
+    { sheet: 'exercises', range: 'F2:F', values: ['active', 'archived', 'template'] },
     { sheet: 'runs', range: 'F2:F', values: ['running', 'success', 'failed'] },
     { sheet: 'help_requests', range: 'E2:E', values: ['open', 'in_progress', 'resolved'] },
   ];
