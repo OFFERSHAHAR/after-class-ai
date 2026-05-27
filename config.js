@@ -3,5 +3,6 @@ window.AFTER_CLASS_AI_CONFIG = {
   defaultSessionCode: "AI-203",
   refreshSeconds: 10,
   currentWorkflowName: "customer-service-chatbot-demo.json",
-  currentWorkflowUrl: "workflows/current-class-workflow.json"
+  currentWorkflowUrl: "workflows/current-class-workflow.json",
+  n8nWebhookUrl: "https://unallowable-lustrelessly-pok.ngrok-free.dev/webhook/after-class-support-chat"
 };

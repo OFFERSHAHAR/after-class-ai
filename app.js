@@ -48,6 +48,8 @@ const joinButton = document.querySelector("#joinLab");
 const runButton = document.querySelector("#studentRun");
 const helpButton = document.querySelector("#helpRequest");
 const downloadButton = document.querySelector("#downloadWorkflow");
+const testChatbotButton = document.querySelector("#testChatbot");
+const chatbotResult = document.querySelector("#chatbotResult");
 
 sessionCodeInput.value = defaultSessionCode;
 
@@ -70,6 +72,11 @@ function setButtonBusy(button, busyText) {
     button.disabled = false;
     button.textContent = originalText;
   };
+}
+
+function setChatbotResult(message, status = "") {
+  chatbotResult.textContent = message;
+  chatbotResult.className = `result-box ${status}`.trim();
 }
 
 function renderFeed() {
@@ -275,6 +282,47 @@ document.querySelector("#studentRun").addEventListener("click", async () => {
       setAction(payload.error || "ההרצה לא נרשמה.", "error");
     }
   } catch (error) {
+    setAction(error.message, "error");
+  } finally {
+    release();
+  }
+});
+
+document.querySelector("#testChatbot").addEventListener("click", async () => {
+  const release = setButtonBusy(testChatbotButton, "בודק...");
+  const name = document.querySelector("#studentName").value.trim() || "תלמיד/ה";
+  const sessionCode = sessionCodeInput.value.trim() || defaultSessionCode;
+  setAction("שולח בדיקה אל התרגיל ומחכה לתשובה...", "busy");
+  setChatbotResult("בודק את הצאט בוט מול סביבת העבודה...");
+
+  if (!apiUrl) {
+    setChatbotResult("מצב דמו: הצאט בוט היה מחזיר תשובה מובנית לשירות לקוחות.", "success");
+    setAction("בדיקת דמו הסתיימה.", "success");
+    release();
+    return;
+  }
+
+  try {
+    const payload = await callApi("runN8nTest", {
+      sessionCode,
+      actorName: name,
+      workflowName: "Customer Service Chatbot",
+      webhookUrl: config.n8nWebhookUrl,
+      message: "שלום, אני רוצה לדעת איך מקבלים החזר כספי על הזמנה",
+    });
+
+    if (payload.ok) {
+      const result = typeof payload.result === "string" ? payload.result : JSON.stringify(payload.result, null, 2);
+      setChatbotResult(result, "success");
+      setAction("הבדיקה הצליחה ונרשמה בלוח.", "success");
+      await refreshState();
+    } else {
+      setChatbotResult(payload.error || JSON.stringify(payload, null, 2), "error");
+      setAction("הבדיקה נכשלה ונרשמה בלוח.", "error");
+      await refreshState();
+    }
+  } catch (error) {
+    setChatbotResult(error.message, "error");
     setAction(error.message, "error");
   } finally {
     release();

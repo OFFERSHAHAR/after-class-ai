@@ -123,6 +123,7 @@ after-class-ai/
 - [זרימת עבודה אמיתית לשיעור](docs/real-class-workflow-flow.md)
 - [הפעלה בלחיצה אחת לשיעור](docs/tomorrow-class-one-click.md)
 - [בדיקת קצה לקצה למורה ואור](docs/end-to-end-test-or-teacher.md)
+- [בדיקת צאט בוט אוטומטית](docs/automatic-chatbot-test-flow.md)
 - [Roadmap](docs/roadmap.md)
 
 ## מצגת למורה

@@ -150,6 +150,7 @@ function route(action, data) {
   if (action === 'join') return joinSession(data);
   if (action === 'createRun') return createRun(data);
   if (action === 'reportRun') return reportRun(data);
+  if (action === 'runN8nTest') return runN8nTest(data);
   if (action === 'requestHelp') return requestHelp(data);
   if (action === 'createSession') return createSession(data);
   return { ok: false, error: 'Unknown action: ' + action };
@@ -241,6 +242,70 @@ function reportRun(data) {
 
   appendObject(SHEETS.runs, run);
   return { ok: true, run, session };
+}
+
+function runN8nTest(data) {
+  const sessions = readObjects(SHEETS.sessions);
+  const session = data.sessionId
+    ? sessions.find((row) => row.id === data.sessionId)
+    : sessions.find((row) => row.code === data.sessionCode) || sessions.find((row) => row.status === 'active');
+
+  if (!session) return { ok: false, error: 'No matching session found' };
+  if (!data.webhookUrl) return { ok: false, error: 'Missing n8n webhook URL' };
+
+  const body = {
+    name: data.actorName || data.studentName || 'Student',
+    email: data.email || 'student@example.com',
+    message: data.message || 'שלום, אני רוצה לדעת איך מקבלים החזר כספי על הזמנה',
+  };
+
+  try {
+    const response = UrlFetchApp.fetch(data.webhookUrl, {
+      method: 'post',
+      contentType: 'application/json',
+      payload: JSON.stringify(body),
+      muteHttpExceptions: true,
+    });
+
+    const responseCode = response.getResponseCode();
+    const responseText = response.getContentText();
+    const ok = responseCode >= 200 && responseCode < 300;
+    let parsed = responseText;
+
+    try {
+      parsed = JSON.parse(responseText);
+    } catch (error) {
+      parsed = responseText;
+    }
+
+    const run = {
+      id: 'run-' + Date.now(),
+      session_id: session.id,
+      student_id: body.name,
+      exercise_id: session.active_exercise_id || 'customer-service-chatbot',
+      workflow_id: data.workflowName || 'Customer Service Chatbot',
+      status: ok ? 'success' : 'failed',
+      message: ok ? 'Chatbot test completed' : 'Chatbot test failed: HTTP ' + responseCode,
+      created_at: new Date(),
+    };
+
+    appendObject(SHEETS.runs, run);
+    return { ok, run, responseCode, result: parsed };
+  } catch (error) {
+    const run = {
+      id: 'run-' + Date.now(),
+      session_id: session.id,
+      student_id: body.name,
+      exercise_id: session.active_exercise_id || 'customer-service-chatbot',
+      workflow_id: data.workflowName || 'Customer Service Chatbot',
+      status: 'failed',
+      message: 'Chatbot test error: ' + error.message,
+      created_at: new Date(),
+    };
+
+    appendObject(SHEETS.runs, run);
+    return { ok: false, run, error: error.message };
+  }
 }
 
 function requestHelp(data) {

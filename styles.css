@@ -152,6 +152,10 @@ button {
   gap: 10px;
 }
 
+.run-controls {
+  flex-wrap: wrap;
+}
+
 .icon-btn,
 .small-btn,
 .ghost-btn,
@@ -416,6 +420,30 @@ button {
 button[disabled] {
   cursor: wait;
   opacity: 0.62;
+}
+
+.result-box {
+  margin-top: 14px;
+  padding: 14px;
+  min-height: 62px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fbfcfc;
+  color: var(--muted);
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.result-box.success {
+  border-color: #8fd6aa;
+  background: #f1fbf5;
+  color: #124f2d;
+}
+
+.result-box.error {
+  border-color: #efb0b0;
+  background: #fff4f4;
+  color: #8a1d1d;
 }
 
 .pill,
