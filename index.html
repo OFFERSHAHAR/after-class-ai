@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>After Class AI</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="ניווט ראשי">
+        <div class="brand">
+          <div class="brand-mark">AI</div>
+          <div>
+            <h1>After Class AI</h1>
+            <p>מעבדת n8n חיה אחרי השיעור</p>
+          </div>
+        </div>
+
+        <nav class="nav-list">
+          <button class="nav-item active" data-view="teacher" type="button">
+            <span>לוח מורה</span>
+            <strong>Live</strong>
+          </button>
+          <button class="nav-item" data-view="student" type="button">
+            <span>מסך תלמיד</span>
+            <strong>Lab</strong>
+          </button>
+          <button class="nav-item" data-view="workflows" type="button">
+            <span>תבניות n8n</span>
+            <strong>3</strong>
+          </button>
+        </nav>
+
+        <section class="side-panel">
+          <div class="mini-label">שרת מקומי</div>
+          <div class="server-row">
+            <span class="status-dot"></span>
+            <span>n8n.local:5678</span>
+          </div>
+          <div class="side-actions">
+            <button class="icon-btn" type="button" title="העתקת קישור">⧉</button>
+            <button class="icon-btn" type="button" title="פתיחת סביבת n8n">↗</button>
+          </div>
+        </section>
+      </aside>
+
+      <main class="workspace">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">מחזור הטמעת AI בארגונים</p>
+            <h2>כיתה פתוחה לתרגול workflows</h2>
+          </div>
+          <div class="topbar-actions">
+            <button class="ghost-btn" id="simulateRun" type="button">הרצת דמו</button>
+            <button class="primary-btn" id="createSession" type="button">פתיחת מפגש</button>
+          </div>
+        </header>
+
+        <section class="view active" id="teacher">
+          <div class="metrics-grid">
+            <article class="metric-card">
+              <span>תלמידים פעילים</span>
+              <strong id="activeStudents">12</strong>
+              <small>4 עובדים על webhook</small>
+            </article>
+            <article class="metric-card">
+              <span>הרצות מוצלחות</span>
+              <strong id="successRuns">28</strong>
+              <small>ב־45 הדקות האחרונות</small>
+            </article>
+            <article class="metric-card warning">
+              <span>דורש עזרה</span>
+              <strong id="needsHelp">3</strong>
+              <small>בעיקר credentials</small>
+            </article>
+            <article class="metric-card">
+              <span>תבנית נוכחית</span>
+              <strong>Lead Bot</strong>
+              <small>Webhook + AI + Sheets</small>
+            </article>
+          </div>
+
+          <div class="teacher-layout">
+            <section class="panel live-feed">
+              <div class="panel-header">
+                <div>
+                  <h3>מעבדה חיה</h3>
+                  <p>כל הרצה מופיעה כאן כדי שהכיתה תוכל ללמוד יחד.</p>
+                </div>
+                <button class="small-btn" id="clearFeed" type="button">ניקוי</button>
+              </div>
+              <div class="feed-list" id="feedList"></div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-header">
+                <div>
+                  <h3>תרגיל נוכחי</h3>
+                  <p>שכפול workflow אישי מתוך תבנית.</p>
+                </div>
+              </div>
+              <div class="exercise-box">
+                <div class="exercise-icon">⚡</div>
+                <div>
+                  <h4>Lead Bot מהיר</h4>
+                  <p>Webhook קולט ליד, AI מסווג דחיפות, והתוצאה נשמרת ב־Google Sheets.</p>
+                </div>
+              </div>
+              <div class="checklist">
+                <label><input type="checkbox" checked /> webhook פעיל</label>
+                <label><input type="checkbox" checked /> מפתח OpenAI מוגדר בסביבת דמו</label>
+                <label><input type="checkbox" /> בדיקת שגיאות לתלמידים</label>
+              </div>
+              <button class="wide-btn" id="cloneForClass" type="button">שכפל תרגיל לכל הכיתה</button>
+            </section>
+          </div>
+        </section>
+
+        <section class="view" id="student">
+          <div class="student-stage">
+            <section class="panel join-panel">
+              <h3>הצטרפות למעבדה</h3>
+              <p>תלמיד מקבל סביבת ניסוי אישית, מריץ, והכיתה רואה את הסטטוס בלי לגעת בעבודה שלו.</p>
+              <div class="form-row">
+                <input id="studentName" type="text" placeholder="שם תלמיד/ה" value="נועה" />
+                <button class="primary-btn" id="joinLab" type="button">הצטרפות</button>
+              </div>
+            </section>
+
+            <section class="panel student-workflow">
+              <div class="panel-header">
+                <div>
+                  <h3>ה־workflow שלי</h3>
+                  <p>עותק אישי מתוך התרגיל הנוכחי.</p>
+                </div>
+                <span class="pill">Sandbox</span>
+              </div>
+              <div class="node-map" aria-label="מפת workflow">
+                <div class="node">Webhook</div>
+                <div class="connector"></div>
+                <div class="node ai">AI Classifier</div>
+                <div class="connector"></div>
+                <div class="node sheet">Google Sheets</div>
+              </div>
+              <div class="run-controls">
+                <button class="primary-btn" id="studentRun" type="button">הרץ workflow</button>
+                <button class="ghost-btn" type="button">פתח ב־n8n</button>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <section class="view" id="workflows">
+          <div class="template-grid">
+            <article class="template-card">
+              <span class="template-tag">מתחילים</span>
+              <h3>Webhook Echo</h3>
+              <p>תרגול בסיסי של קבלת בקשה, שינוי JSON והחזרת תשובה.</p>
+              <button class="small-btn" type="button">שכפול</button>
+            </article>
+            <article class="template-card">
+              <span class="template-tag">AI</span>
+              <h3>Lead Bot</h3>
+              <p>סיווג לידים עם מודל שפה ושמירה לגיליון תרגול.</p>
+              <button class="small-btn" type="button">שכפול</button>
+            </article>
+            <article class="template-card">
+              <span class="template-tag">ארגוני</span>
+              <h3>Ticket Router</h3>
+              <p>ניתוב פניות לפי נושא, דחיפות וצוות מטפל.</p>
+              <button class="small-btn" type="button">שכפול</button>
+            </article>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
