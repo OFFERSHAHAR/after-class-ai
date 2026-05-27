@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>After Class AI - הצעה למורה</title>
+    <link rel="stylesheet" href="pitch.css" />
+  </head>
+  <body>
+    <header class="deck-header">
+      <a class="brand" href="#hero" aria-label="After Class AI">
+        <span class="brand-mark">AI</span>
+        <span>After Class AI</span>
+      </a>
+      <nav aria-label="ניווט מצגת">
+        <a href="#problem">הבעיה</a>
+        <a href="#solution">הפתרון</a>
+        <a href="#pilot">פיילוט</a>
+        <a href="#ask">הבקשה</a>
+      </nav>
+      <button class="print-btn" type="button" onclick="window.print()">ייצוא / הדפסה</button>
+    </header>
+
+    <main>
+      <section class="hero slide" id="hero">
+        <div class="hero-media" aria-hidden="true">
+          <div class="screen teacher-screen">
+            <div class="screen-top">
+              <span></span><span></span><span></span>
+            </div>
+            <div class="live-title">Live Class Lab</div>
+            <div class="metric-row">
+              <div><strong>18</strong><small>תלמידים</small></div>
+              <div><strong>42</strong><small>הרצות</small></div>
+              <div><strong>3</strong><small>צריכים עזרה</small></div>
+            </div>
+            <div class="event ok">נועה הריצה Lead Bot בהצלחה</div>
+            <div class="event warn">דניאל צריך עזרה ב-credentials</div>
+            <div class="event run">מאיה בודקת webhook חדש</div>
+          </div>
+          <div class="orbit one"></div>
+          <div class="orbit two"></div>
+        </div>
+        <div class="hero-copy">
+          <p class="eyebrow">הצעה לפיילוט כיתתי</p>
+          <h1>After Class AI</h1>
+          <p class="lede">
+            כיתה וירטואלית לתרגול n8n ו-AI אחרי שיעור הזום, עם שרת משותף,
+            תבניות מוכנות, לוח מורה חי, וערכת המשך תרגול לכל חניך.
+          </p>
+          <div class="hero-actions">
+            <a class="primary" href="#ask">מה צריך לאשר</a>
+            <a class="secondary" href="#pilot">איך מתחילים קטן</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide intro-band">
+        <div class="section-title">
+          <p class="eyebrow">המשפט הקצר</p>
+          <h2>לא עוד שיעור שמסתיים בזום. מעבדה חיה שממשיכה לעבוד.</h2>
+        </div>
+        <div class="statement-grid">
+          <article>
+            <strong>הפער</strong>
+            <p>לתלמידים אין תמיד מנויים, API keys, n8n עובד או ביטחון טכני להקים סביבת תרגול.</p>
+          </article>
+          <article>
+            <strong>הפתרון</strong>
+            <p>שרת כיתתי אחד, תבניות workflow, Google Sheets לניהול, וכל תלמיד מקבל עותק אישי.</p>
+          </article>
+          <article>
+            <strong>התוצאה</strong>
+            <p>יותר תרגול, פחות חסמים, יותר למידה מתוך טעויות אמיתיות, ופחות זמן מבוזבז על התקנות.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="slide" id="problem">
+        <div class="section-title">
+          <p class="eyebrow">למה זה נדרש</p>
+          <h2>הבעיה היא לא שהתלמידים לא רוצים לתרגל. חסרה להם תשתית.</h2>
+        </div>
+        <div class="problem-layout">
+          <div class="pain-list">
+            <div class="pain-item">
+              <span>01</span>
+              <div>
+                <h3>מנויים וכלים</h3>
+                <p>n8n, GPT, Claude, API credits וכלים משלימים יוצרים עלות ובלבול עוד לפני שהתרגול מתחיל.</p>
+              </div>
+            </div>
+            <div class="pain-item">
+              <span>02</span>
+              <div>
+                <h3>הקמה טכנית</h3>
+                <p>Docker, webhooks, credentials, ports, ngrok והרשאות גוזלים זמן שיעור יקר.</p>
+              </div>
+            </div>
+            <div class="pain-item">
+              <span>03</span>
+              <div>
+                <h3>אין תמונת מצב למורה</h3>
+                <p>בזום קשה לדעת מי הריץ, מי תקוע, מי צריך עזרה, ואילו שגיאות חוזרות בכיתה.</p>
+              </div>
+            </div>
+            <div class="pain-item">
+              <span>04</span>
+              <div>
+                <h3>השיעור נגמר, התרגול נעלם</h3>
+                <p>בלי ערכת המשך, תלמידים מתקשים לשחזר את הסביבה ולהמשיך להתנסות לבד.</p>
+              </div>
+            </div>
+          </div>
+          <aside class="quote-panel">
+            <h3>הבעיה הפדגוגית</h3>
+            <p>
+              הקורס מלמד הטמעת AI בארגונים, אבל אם סביבת התרגול תלויה במנויים פרטיים
+              ובהקמות אישיות, חלק מהכיתה נשאר מאחור מסיבות תשתיתיות ולא מקצועיות.
+            </p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="slide" id="solution">
+        <div class="section-title">
+          <p class="eyebrow">הפתרון</p>
+          <h2>After Class AI היא שכבת כיתה מעל n8n.</h2>
+        </div>
+        <div class="diagram-card">
+          <div class="flow">
+            <div class="flow-node teacher">מורה<br /><small>פותח שיעור</small></div>
+            <div class="arrow"></div>
+            <div class="flow-node sheet">Google Sheets<br /><small>ניהול שיעור</small></div>
+            <div class="arrow"></div>
+            <div class="flow-node n8n">n8n Server<br /><small>הרצת workflows</small></div>
+            <div class="arrow"></div>
+            <div class="flow-node student">חניכים<br /><small>עותק אישי</small></div>
+          </div>
+        </div>
+        <div class="feature-grid">
+          <article>
+            <h3>לוח מורה</h3>
+            <p>הצטרפות תלמידים, סטטוס הרצות, בקשות עזרה, תרגיל פעיל ותצוגת Live Board לזום.</p>
+          </article>
+          <article>
+            <h3>מסך תלמיד</h3>
+            <p>קוד שיעור, כפתור “שכפל אליי”, פתיחה ב-n8n, הרצת בדיקה, ובקשת עזרה.</p>
+          </article>
+          <article>
+            <h3>Student Kit</h3>
+            <p>תיקייה מקומית לחניך: לחיצה אחת, תבניות, payloads, notes, ו-ngrok אופציונלי.</p>
+          </article>
+          <article>
+            <h3>Backend קל</h3>
+            <p>Google Sheets + Apps Script מאפשרים להתחיל בלי לבנות מערכת משתמשים מלאה מהיום הראשון.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="slide">
+        <div class="section-title">
+          <p class="eyebrow">איך זה עובד בשיעור</p>
+          <h2>זרימה פשוטה שהמורה והתלמידים יכולים להבין מיד.</h2>
+        </div>
+        <ol class="timeline">
+          <li>
+            <span>1</span>
+            <div>
+              <h3>המורה פותח שיעור</h3>
+              <p>בוחר תרגיל, מקבל קוד שיעור, ומכין Live Board לשיתוף בזום.</p>
+            </div>
+          </li>
+          <li>
+            <span>2</span>
+            <div>
+              <h3>התלמידים מצטרפים</h3>
+              <p>נכנסים לקישור, מזינים שם וקוד שיעור. אין צורך בהתקנות לפני התרגול.</p>
+            </div>
+          </li>
+          <li>
+            <span>3</span>
+            <div>
+              <h3>כל תלמיד מקבל workflow אישי</h3>
+              <p>התלמיד עובד על עותק משלו, בלי לדרוס את התבנית ובלי לפגוע בעבודה של אחרים.</p>
+            </div>
+          </li>
+          <li>
+            <span>4</span>
+            <div>
+              <h3>המורה רואה הכל בלייב</h3>
+              <p>מי הצליח, מי נכשל, מי צריך עזרה ואילו טעויות חוזרות. השיעור הופך למעבדה.</p>
+            </div>
+          </li>
+        </ol>
+      </section>
+
+      <section class="slide compare">
+        <div class="section-title">
+          <p class="eyebrow">לפני / אחרי</p>
+          <h2>מה משתנה בפועל עבור הכיתה.</h2>
+        </div>
+        <div class="compare-grid">
+          <article class="before">
+            <h3>המצב היום</h3>
+            <ul>
+              <li>כל תלמיד צריך להבין לבד איך להקים n8n.</li>
+              <li>חלק מהתלמידים בלי מנויים או API keys.</li>
+              <li>המורה לא רואה בזמן אמת מי תקוע.</li>
+              <li>הרבה זמן הולך על בעיות התקנה.</li>
+              <li>אחרי הזום קשה להמשיך לתרגל.</li>
+            </ul>
+          </article>
+          <article class="after">
+            <h3>עם After Class AI</h3>
+            <ul>
+              <li>שרת כיתתי אחד מספק סביבת תרגול אחידה.</li>
+              <li>תבניות, credentials דמו ומכסות שימוש נשלטות.</li>
+              <li>לוח מורה מציג התקדמות ובקשות עזרה.</li>
+              <li>זמן השיעור הולך על למידה, לא על תשתית.</li>
+              <li>Student Kit מאפשר המשך תרגול בבית.</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="slide">
+        <div class="section-title">
+          <p class="eyebrow">ארכיטקטורה</p>
+          <h2>מתחילים פשוט, משאירים מקום לגדילה.</h2>
+        </div>
+        <div class="architecture">
+          <div class="layer">
+            <h3>Frontend</h3>
+            <p>After Class AI: לוח מורה, מסך תלמיד, Live Board, הורדת תבניות.</p>
+          </div>
+          <div class="layer">
+            <h3>Sheets Backend</h3>
+            <p>sessions, students, exercises, runs, help_requests דרך Apps Script.</p>
+          </div>
+          <div class="layer">
+            <h3>Automation</h3>
+            <p>n8n מריץ workflows, מקבל webhooks, ומחזיר סטטוסים למערכת.</p>
+          </div>
+          <div class="layer">
+            <h3>Practice Kits</h3>
+            <p>תיקיית חניך מקומית עם BAT, templates, payloads ו-ngrok לפי צורך.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide objections">
+        <div class="section-title">
+          <p class="eyebrow">התנגדויות צפויות</p>
+          <h2>חשבנו מראש על השאלות הקשות.</h2>
+        </div>
+        <div class="objection-grid">
+          <article>
+            <h3>“זה יעלה כסף?”</h3>
+            <p>הפיילוט יכול להתחיל עם Google Sheets, n8n מקומי/שרת קטן, ומכסת API מוגבלת. מתחילים עם תרגיל אחד ומודדים עלות אמיתית לפני הרחבה.</p>
+          </article>
+          <article>
+            <h3>“זה מסוכן מבחינת API keys?”</h3>
+            <p>לא חושפים keys לתלמידים. עובדים עם credentials דמו, מכסות, נתוני דמה, והרשאות מוגבלות.</p>
+          </article>
+          <article>
+            <h3>“זה יכביד על השיעור?”</h3>
+            <p>המטרה הפוכה: לחיצה אחת להצטרפות, תבניות מוכנות, ולוח מורה שמרכז את מצב הכיתה במקום הודעות מפוזרות בזום.</p>
+          </article>
+          <article>
+            <h3>“מה אם תלמיד לא טכני?”</h3>
+            <p>Student Kit בנוי בדיוק לזה: קובץ BAT, דף פתיחה, payloads מוכנים, והסבר ברור. אם חסר Python, הוא נפתח במצב fallback.</p>
+          </article>
+          <article>
+            <h3>“מה אם השרת נופל?”</h3>
+            <p>בפיילוט עובדים עם תוכנית גיבוי: תבניות JSON להורדה, Student Kit מקומי, ויכולת לתרגל גם בלי חיבור מלא לשרת.</p>
+          </article>
+          <article>
+            <h3>“למה לא פשוט שכל אחד יפתח חשבון?”</h3>
+            <p>כי מטרת הקורס היא הטמעת AI בארגונים, לא מבחן הישרדות בהתקנות. סביבת כיתה מסירה חסמים ומייצרת אחידות.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="slide">
+        <div class="section-title">
+          <p class="eyebrow">עלות ובקרה</p>
+          <h2>אפשר להתחיל בלי לפתוח התחייבות גדולה.</h2>
+        </div>
+        <div class="cost-grid">
+          <article>
+            <span class="cost-icon">₪</span>
+            <h3>פיילוט זול</h3>
+            <p>Google Sheets חינמי, Apps Script חינמי, n8n בשרת קטן או מקומי, ותרגילים עם נתוני דמו.</p>
+          </article>
+          <article>
+            <span class="cost-icon">↯</span>
+            <h3>מכסות שימוש</h3>
+            <p>מגבילים קריאות API לפי שיעור, משתמשים במודלים זולים לתרגול, ומנטרים חריגות.</p>
+          </article>
+          <article>
+            <span class="cost-icon">□</span>
+            <h3>מדידה לפני הרחבה</h3>
+            <p>בודקים כמה תלמידים השתמשו, כמה workflows הורצו, כמה בעיות נפתרו, ומה העלות האמיתית.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="slide" id="pilot">
+        <div class="section-title">
+          <p class="eyebrow">פיילוט מוצע</p>
+          <h2>שיעור אחד. תרגיל אחד. מדידה ברורה.</h2>
+        </div>
+        <div class="pilot-board">
+          <div class="pilot-card">
+            <h3>היקף</h3>
+            <p>עד 10 תלמידים, 45 דקות תרגול, תרגיל Lead Bot אחד.</p>
+          </div>
+          <div class="pilot-card">
+            <h3>תשתית</h3>
+            <p>Google Sheet משותף, Apps Script, n8n אחד, תבנית workflow אחת.</p>
+          </div>
+          <div class="pilot-card">
+            <h3>מדדים</h3>
+            <p>כמה הצטרפו, כמה הריצו, כמה נתקעו, אילו שגיאות חזרו, והאם המורה קיבל תמונת מצב.</p>
+          </div>
+          <div class="pilot-card">
+            <h3>תוצר</h3>
+            <p>סיכום שיעור, תובנות לשיפור, ותשובה האם להפוך לכלי קבוע בקורס.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <div class="section-title">
+          <p class="eyebrow">מה כבר מוכן</p>
+          <h2>זו לא רק מצגת. יש התחלה עובדת בפרויקט.</h2>
+        </div>
+        <div class="ready-grid">
+          <article><strong>ממשק דמו</strong><span>לוח מורה, תלמיד, תבניות ופיד חי.</span></article>
+          <article><strong>Git repo</strong><span>מוכן לעבודה משותפת עם commits מסודרים.</span></article>
+          <article><strong>Google Sheets</strong><span>סכמה, Apps Script ופקודת הקמה מעוצבת.</span></article>
+          <article><strong>n8n Template</strong><span>Lead Bot workflow לדוגמה.</span></article>
+          <article><strong>Student Kit</strong><span>קובץ BAT, templates, payloads, ngrok אופציונלי.</span></article>
+          <article><strong>תיעוד</strong><span>מדריכי מורה, תפעול, Sheets, Git ופיילוט.</span></article>
+        </div>
+      </section>
+
+      <section class="slide final" id="ask">
+        <div class="final-card">
+          <p class="eyebrow">הבקשה</p>
+          <h2>לאשר פיילוט קטן ומבוקר לכיתה.</h2>
+          <p>
+            המטרה היא לבדוק האם סביבת תרגול משותפת יכולה לפתור את בעיית המנויים,
+            ההתקנות והפער בין שיעור תאורטי לתרגול אמיתי.
+          </p>
+          <div class="ask-list">
+            <span>אישור לשיעור פיילוט אחד</span>
+            <span>תרגיל n8n אחד</span>
+            <span>עד 10 תלמידים</span>
+            <span>סיכום תובנות אחרי השיעור</span>
+          </div>
+          <a class="primary" href="../docs/teacher-proposal.md">למסמך ההצעה המלא</a>
+        </div>
+      </section>
+    </main>
+
+    <script src="pitch.js"></script>
+  </body>
+</html>

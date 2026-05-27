@@ -16,6 +16,7 @@
 - דוגמת workflow לייבוא ל-n8n
 - תכנון ותבניות Google Sheets כ-backend זמני ל-MVP
 - Student Kit להרצה מקומית של חניכים אחרי השיעור
+- מצגת HTML להצגת הרעיון למורה והסרת התנגדויות
 
 ## הרצה מקומית של הממשק
 
@@ -82,6 +83,10 @@ after-class-ai/
     tools/
     my-workflows/
     notes/
+  teacher-pitch/
+    index.html
+    pitch.css
+    pitch.js
   workflows/
     lead-bot-template.json
 ```
@@ -105,6 +110,14 @@ after-class-ai/
 - [פקודת הקמת Google Sheets](docs/sheets-setup-command.md)
 - [ערכת הרצה לחניך](docs/student-kit.md)
 - [Roadmap](docs/roadmap.md)
+
+## מצגת למורה
+
+פתיחה מקומית:
+
+```text
+http://127.0.0.1:5173/after-class-ai/teacher-pitch/
+```
 
 ## סטטוס
 
