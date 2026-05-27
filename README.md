@@ -118,6 +118,7 @@ after-class-ai/
 - [תוכנית הרצה עד מחר בבוקר](docs/tonight-launch-runbook.md)
 - [הצגת הרצות מתוך n8n בממשק](docs/n8n-live-reporting.md)
 - [שרת כיתה להרצת הממשק ו-n8n](docs/classroom-server.md)
+- [התמונה המלאה של חוויית מורה ותלמיד](docs/full-classroom-experience.md)
 - [Roadmap](docs/roadmap.md)
 
 ## מצגת למורה
