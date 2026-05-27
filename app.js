@@ -711,31 +711,6 @@ document.querySelector("#cloneForClass").addEventListener("click", () => {
   setView("teacher-builder");
 });
 
-document.querySelector("#createSession").addEventListener("click", async () => {
-  if (!apiUrl) {
-    pushFeed({
-      status: "ok",
-      icon: "✓",
-      name: "מערכת",
-      title: "מפגש דמו נפתח",
-      detail: "הכיתה מוכנה לתרגול דמו.",
-    });
-    return;
-  }
-
-  const payload = await callApi("createSession", {
-    code: sessionCodeInput.value.trim() || defaultSessionCode,
-    title: lessonTitle.value.trim() || "שיעור תרגול חי",
-    teacher: "Teacher",
-  });
-
-  if (payload.ok) {
-    state.session = payload.session;
-    setConnection("שיעור חדש נוצר בגיליון.", "connected");
-    await refreshState();
-  }
-});
-
 document.querySelector("#workflowFileInput").addEventListener("change", async (event) => {
   const [file] = event.target.files;
   if (!file) return;
