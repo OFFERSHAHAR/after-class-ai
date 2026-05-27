@@ -100,25 +100,33 @@ function parseStoredList(key) {
 function setConnection(message, status = "") {
   connectionNote.textContent = message;
   connectionNote.className = `connection-note ${status}`.trim();
+  cueElement(connectionNote);
 }
 
 function setAction(message, status = "") {
   studentActionNote.textContent = message;
   studentActionNote.className = `action-note ${status}`.trim();
+  cueElement(studentActionNote);
 }
 
 function setTeacherNote(message, status = "") {
   teacherBuilderNote.textContent = message;
   teacherBuilderNote.className = `action-note ${status}`.trim();
+  cueElement(teacherBuilderNote);
 }
 
 function setButtonBusy(button, busyText) {
   if (!button) return () => {};
   const originalText = button.textContent;
+  button.dataset.originalText = originalText;
   button.disabled = true;
+  button.classList.add("is-busy");
+  button.setAttribute("aria-busy", "true");
   button.textContent = busyText;
   return () => {
     button.disabled = false;
+    button.classList.remove("is-busy");
+    button.removeAttribute("aria-busy");
     button.textContent = originalText;
   };
 }
@@ -126,6 +134,14 @@ function setButtonBusy(button, busyText) {
 function setChatbotResult(message, status = "") {
   chatbotResult.textContent = message;
   chatbotResult.className = `result-box ${status}`.trim();
+  cueElement(chatbotResult);
+}
+
+function cueElement(element) {
+  if (!element) return;
+  element.classList.remove("soft-cue");
+  void element.offsetWidth;
+  element.classList.add("soft-cue");
 }
 
 function showToast(title, message) {
@@ -544,6 +560,7 @@ document.querySelector("#studentRun").addEventListener("click", async () => {
   if (!apiUrl || !state.session || !state.student) {
     addDemoRun(name);
     setAction("הרצת דמו נרשמה.", "success");
+    showToast("הרצה נרשמה", "הפעולה נקלטה בלוח הכיתה המקומי.");
     release();
     return;
   }
@@ -559,9 +576,11 @@ document.querySelector("#studentRun").addEventListener("click", async () => {
 
     if (payload.ok) {
       setAction("ההרצה נרשמה בהצלחה.", "success");
+      showToast("הרצה התקבלה", "המורה יראה בלוח שהשלמת את התרגיל.");
       await refreshState();
     } else {
       setAction(payload.error || "ההרצה לא נרשמה.", "error");
+      showToast("משהו נעצר", "ההרצה לא נרשמה. כדאי לבקש עזרה מהמורה.");
     }
   } catch (error) {
     setAction(error.message, "error");
@@ -580,6 +599,7 @@ document.querySelector("#testChatbot").addEventListener("click", async () => {
   if (!apiUrl) {
     setChatbotResult("מצב דמו: הצאט בוט החזיר תשובה מובנית לשירות לקוחות.", "success");
     setAction("בדיקת דמו הסתיימה.", "success");
+    showToast("בדיקה הסתיימה", "קיבלת תשובת דמו תקינה מהתרגיל.");
     release();
     return;
   }
@@ -597,10 +617,12 @@ document.querySelector("#testChatbot").addEventListener("click", async () => {
       const result = typeof payload.result === "string" ? payload.result : JSON.stringify(payload.result, null, 2);
       setChatbotResult(result, "success");
       setAction("הבדיקה הצליחה ונרשמה בלוח.", "success");
+      showToast("בדיקה הצליחה", "התשובה נקלטה והופיעה בלוח הכיתה.");
       await refreshState();
     } else {
       setChatbotResult(payload.error || JSON.stringify(payload, null, 2), "error");
       setAction("הבדיקה נכשלה ונרשמה בלוח.", "error");
+      showToast("הבדיקה נכשלה", "התקלה נשמרה כדי שהמורה יוכל לראות ולעזור.");
       await refreshState();
     }
   } catch (error) {
@@ -628,6 +650,7 @@ document.querySelector("#downloadWorkflow").addEventListener("click", () => {
   }
 
   setAction("קובץ התרגיל הורד למחשב.", "success");
+  showToast("התרגיל ירד", "עכשיו אפשר לייבא אותו לסביבת העבודה ולהתחיל לתקן.");
   window.setTimeout(release, 800);
 });
 
@@ -699,6 +722,7 @@ document.querySelector("#helpRequest").addEventListener("click", async () => {
       detail: "מצב דמו. בגרסה המחוברת זה יירשם בגיליון.",
     });
     setAction("בקשת עזרה נרשמה במצב דמו.", "success");
+    showToast("המורה קיבל סימון", "בקשת העזרה מופיעה עכשיו בלוח המקומי.");
     release();
     return;
   }
@@ -712,9 +736,11 @@ document.querySelector("#helpRequest").addEventListener("click", async () => {
 
     if (payload.ok) {
       setAction("בקשת העזרה נשלחה למורה.", "success");
+      showToast("בקשת עזרה נשלחה", "המורה יראה מי ביקש עזרה ומה מצב ההרצה.");
       await refreshState();
     } else {
       setAction(payload.error || "בקשת העזרה לא נשלחה.", "error");
+      showToast("הבקשה לא נשלחה", "נסה שוב בעוד רגע או אמור למורה בעל פה.");
     }
   } catch (error) {
     setAction(error.message, "error");
@@ -748,13 +774,17 @@ document.querySelector("#workflowFileInput").addEventListener("change", async (e
     state.uploadedWorkflow = { name: file.name, content };
     workflowFileStatus.textContent = `הקובץ ${file.name} נטען בהצלחה ויוצע לתלמידים להורדה במחשב הזה.`;
     workflowFileStatus.className = "result-box success";
+    cueElement(workflowFileStatus);
     updateLessonPreview();
     setTeacherNote("קובץ התרגיל נטען בהצלחה.", "success");
+    showToast("קובץ נטען", "אפשר לפרסם אותו לכיתה או לשמור כתבנית.");
   } catch (error) {
     state.uploadedWorkflow = null;
     workflowFileStatus.textContent = "הקובץ לא תקין. צריך קובץ תרגיל בפורמט JSON.";
     workflowFileStatus.className = "result-box error";
+    cueElement(workflowFileStatus);
     setTeacherNote("לא ניתן לקרוא את קובץ התרגיל.", "error");
+    showToast("קובץ לא תקין", "צריך לייצא קובץ תרגיל תקין ולנסות שוב.");
   }
 });
 
@@ -796,6 +826,7 @@ document.querySelector("#publishLesson").addEventListener("click", async () => {
     }
 
     setTeacherNote("השיעור פורסם. כפתור הורד תרגיל יוריד עכשיו את הקובץ שהמורה העלה.", "success");
+    showToast("השיעור באוויר", "כפתור הורדת התרגיל אצל התלמידים מחובר עכשיו לקובץ החדש.");
     pushFeed({
       status: "ok",
       icon: "✓",
@@ -805,6 +836,7 @@ document.querySelector("#publishLesson").addEventListener("click", async () => {
     });
   } catch (error) {
     setTeacherNote(error.message || "פרסום התרגיל נכשל.", "error");
+    showToast("הפרסום נכשל", "בדוק חיבור לגיליון או נסה לפרסם שוב.");
   } finally {
     release();
   }
@@ -836,8 +868,10 @@ saveTemplateButton.addEventListener("click", async () => {
     }
 
     setTeacherNote("התבנית נשמרה ותופיע בעמוד תבניות לתרגול.", "success");
+    showToast("תבנית נשמרה", "התלמידים יוכלו להוריד אותה מאזור התבניות.");
   } catch (error) {
     setTeacherNote(error.message || "שמירת התבנית נכשלה.", "error");
+    showToast("השמירה נכשלה", "בדוק שהקובץ תקין ונסה שוב.");
   } finally {
     release();
   }
@@ -857,6 +891,7 @@ document.querySelector("#downloadLessonPlan").addEventListener("click", () => {
   ].join("\n");
   downloadTextFile("after-class-lesson-plan.txt", text, "text/plain");
   setTeacherNote("דף השיעור הורד למחשב.", "success");
+  showToast("דף שיעור ירד", "יש לך קובץ קצר להצגה או שיתוף.");
 });
 
 const savedLesson = localStorage.getItem("afterClassLesson");
