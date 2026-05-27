@@ -72,6 +72,7 @@ function onOpen() {
   SpreadsheetApp.getUi()
     .createMenu('After Class AI')
     .addItem('Setup / reset sheets', 'setupAfterClassSheets')
+    .addItem('Clear class practice data', 'clearClassPracticeData')
     .addItem('Refresh Ferrari styling', 'styleAfterClassSheets')
     .addToUi();
 }
@@ -110,6 +111,23 @@ function styleAfterClassSheets() {
   });
 
   styleDashboard(spreadsheet.getSheetByName('dashboard'));
+}
+
+function clearClassPracticeData() {
+  const spreadsheet = getSpreadsheet();
+  ['students', 'runs', 'help_requests'].forEach((sheetName) => {
+    const sheet = spreadsheet.getSheetByName(sheetName);
+    if (!sheet) return;
+    const lastRow = sheet.getLastRow();
+    const lastColumn = sheet.getLastColumn();
+    if (lastRow > 1) {
+      sheet.getRange(2, 1, lastRow - 1, lastColumn).clearContent();
+    }
+  });
+
+  styleAfterClassSheets();
+  SpreadsheetApp.flush();
+  return 'Class practice data cleared.';
 }
 
 function doGet(event) {
