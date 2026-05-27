@@ -89,6 +89,7 @@ after-class-ai/
 ## מדריכים
 
 - [פירוט ממשק וחזון](docs/interface-brief.md)
+- [הצעה למורה](docs/teacher-proposal.md)
 - [מדריך תפעול למורה ותלמידים](docs/teacher-operations-guide.md)
 - [Google Sheets כ-backend זמני](docs/google-sheets-backend.md)
 - [Roadmap](docs/roadmap.md)
