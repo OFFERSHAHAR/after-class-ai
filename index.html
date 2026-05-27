@@ -7,6 +7,18 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
+    <section class="role-gate" id="roleGate" aria-labelledby="roleGateTitle">
+      <div class="role-gate-inner">
+        <div class="role-kicker">After Class AI</div>
+        <h1 id="roleGateTitle">כיתה חיה לתרגול אחרי השיעור</h1>
+        <p>בחר איך להיכנס למערכת. כל אחד יראה רק את המסך שמתאים לו.</p>
+        <div class="role-actions">
+          <button class="primary-btn role-choice" id="enterStudent" type="button">כניסת תלמיד</button>
+          <button class="ghost-btn role-choice" id="enterTeacher" type="button">כניסת מורה</button>
+        </div>
+      </div>
+    </section>
+
     <div class="app-shell">
       <aside class="sidebar" aria-label="ניווט ראשי">
         <div class="brand">
@@ -18,11 +30,11 @@
         </div>
 
         <nav class="nav-list">
-          <button class="nav-item active" data-view="student" data-role="student" type="button">
+          <button class="nav-item active student-only" data-view="student" data-role="student" type="button">
             <span>מסך תלמיד</span>
             <strong>פתוח</strong>
           </button>
-          <button class="nav-item" data-view="workflows" data-role="student" type="button">
+          <button class="nav-item student-only" data-view="workflows" data-role="student" type="button">
             <span>תבניות לתרגול</span>
             <strong>קבצים</strong>
           </button>

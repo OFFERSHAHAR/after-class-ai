@@ -3,10 +3,12 @@ const apiUrl = (config.sheetsApiUrl || "").trim();
 const defaultSessionCode = config.defaultSessionCode || "AI-203";
 const refreshSeconds = Number(config.refreshSeconds || 10);
 const teacherCode = config.teacherCode || "teacher203";
+const savedRole = localStorage.getItem("afterClassRole");
 
 const state = {
   session: null,
   student: null,
+  role: savedRole || null,
   teacherMode: localStorage.getItem("afterClassTeacherMode") === "true",
   uploadedWorkflow: null,
   feedClearedAt: Number(localStorage.getItem("afterClassFeedClearedAt") || 0),
@@ -56,6 +58,9 @@ const lessonGoal = document.querySelector("#lessonGoal");
 const guidedFix = document.querySelector("#guidedFix");
 const lessonPreviewTitle = document.querySelector("#lessonPreviewTitle");
 const lessonPreviewGoal = document.querySelector("#lessonPreviewGoal");
+const roleGate = document.querySelector("#roleGate");
+const enterStudentButton = document.querySelector("#enterStudent");
+const enterTeacherButton = document.querySelector("#enterTeacher");
 
 let savedStudent = null;
 try {
@@ -119,7 +124,8 @@ function setChatbotResult(message, status = "") {
 }
 
 function setView(viewId) {
-  const target = state.teacherMode ? viewId : viewId === "teacher" || viewId === "teacher-builder" ? "student" : viewId;
+  const teacherView = viewId === "teacher" || viewId === "teacher-builder";
+  const target = state.teacherMode ? (teacherView ? viewId : "teacher") : teacherView ? "student" : viewId;
   document.querySelectorAll(".nav-item").forEach((item) => {
     item.classList.toggle("active", item.dataset.view === target);
   });
@@ -129,16 +135,32 @@ function setView(viewId) {
 }
 
 function applyRoleMode() {
+  document.body.classList.toggle("role-selected", Boolean(state.role));
   document.querySelectorAll(".teacher-only").forEach((element) => {
     element.hidden = !state.teacherMode;
+  });
+  document.querySelectorAll(".student-only").forEach((element) => {
+    element.hidden = state.teacherMode;
   });
   roleLabel.textContent = state.teacherMode ? "תצוגת מורה פעילה" : "תצוגת תלמיד";
   pageTitle.textContent = state.teacherMode
     ? "לוח מורה והכנת שיעור לכיתה חיה"
     : "מריצים, בודקים, ומקבלים משוב בלי פקודות";
+  if (state.teacherMode && !["teacher", "teacher-builder"].includes(document.querySelector(".view.active")?.id || "")) {
+    setView("teacher");
+  }
   if (!state.teacherMode && (document.querySelector(".view.active")?.id || "") !== "student") {
     setView("student");
   }
+}
+
+function enterStudentMode() {
+  state.role = "student";
+  state.teacherMode = false;
+  localStorage.setItem("afterClassRole", "student");
+  localStorage.removeItem("afterClassTeacherMode");
+  applyRoleMode();
+  setView("student");
 }
 
 function renderFeed() {
@@ -384,6 +406,13 @@ document.querySelectorAll(".nav-item").forEach((button) => {
   button.addEventListener("click", () => setView(button.dataset.view));
 });
 
+enterStudentButton.addEventListener("click", enterStudentMode);
+
+enterTeacherButton.addEventListener("click", () => {
+  document.querySelector("#teacherGate").hidden = false;
+  document.querySelector("#teacherCodeInput").focus();
+});
+
 document.querySelector("#teacherGateOpen").addEventListener("click", () => {
   document.querySelector("#teacherGate").hidden = false;
   document.querySelector("#teacherCodeInput").focus();
@@ -401,7 +430,9 @@ document.querySelector("#teacherLogin").addEventListener("click", () => {
     note.className = "action-note error";
     return;
   }
+  state.role = "teacher";
   state.teacherMode = true;
+  localStorage.setItem("afterClassRole", "teacher");
   localStorage.setItem("afterClassTeacherMode", "true");
   document.querySelector("#teacherGate").hidden = true;
   input.value = "";
@@ -410,10 +441,11 @@ document.querySelector("#teacherLogin").addEventListener("click", () => {
 });
 
 document.querySelector("#teacherExit").addEventListener("click", () => {
+  state.role = null;
   state.teacherMode = false;
+  localStorage.removeItem("afterClassRole");
   localStorage.removeItem("afterClassTeacherMode");
   applyRoleMode();
-  setView("student");
 });
 
 document.querySelector("#simulateRun").addEventListener("click", () => addDemoRun());
@@ -747,6 +779,6 @@ if (savedLesson) {
 renderFeed();
 updateLessonPreview();
 applyRoleMode();
-setView("student");
+setView(state.teacherMode ? "teacher" : "student");
 refreshState();
 if (apiUrl) window.setInterval(refreshState, refreshSeconds * 1000);
