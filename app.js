@@ -10,6 +10,10 @@ const state = {
   teacherMode: localStorage.getItem("afterClassTeacherMode") === "true",
   uploadedWorkflow: null,
   feedClearedAt: Number(localStorage.getItem("afterClassFeedClearedAt") || 0),
+  feedClearedRunIds: parseStoredList("afterClassFeedClearedRunIds"),
+  feedClearedHelpIds: parseStoredList("afterClassFeedClearedHelpIds"),
+  latestRemoteRunIds: [],
+  latestRemoteHelpIds: [],
   activeExercise: null,
 };
 
@@ -71,6 +75,16 @@ webhookUrlInput.value = config.n8nWebhookUrl || "";
 if (openN8nLink) {
   const workspaceUrl = config.n8nWorkspaceUrl || (config.n8nWebhookUrl || "").replace(/\/webhook.*$/, "") || "http://127.0.0.1:5678";
   openN8nLink.href = workspaceUrl;
+}
+
+function parseStoredList(key) {
+  try {
+    const value = JSON.parse(localStorage.getItem(key) || "[]");
+    return Array.isArray(value) ? value : [];
+  } catch {
+    localStorage.removeItem(key);
+    return [];
+  }
 }
 
 function setConnection(message, status = "") {
@@ -157,6 +171,11 @@ function isAfterFeedClear(value) {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return false;
   return date.getTime() > state.feedClearedAt;
+}
+
+function isVisibleRemoteEvent(item, clearedIds) {
+  if (item.id && clearedIds.includes(item.id)) return false;
+  return isAfterFeedClear(item.created_at);
 }
 
 function callApi(action, params = {}) {
@@ -259,8 +278,10 @@ function updateDashboardFromRemote(payload) {
   const students = payload.students || [];
   const allRuns = payload.runs || [];
   const allHelpRequests = payload.helpRequests || [];
-  const runs = allRuns.filter((run) => isAfterFeedClear(run.created_at));
-  const helpRequests = allHelpRequests.filter((help) => isAfterFeedClear(help.created_at));
+  state.latestRemoteRunIds = allRuns.map((run) => run.id).filter(Boolean);
+  state.latestRemoteHelpIds = allHelpRequests.map((help) => help.id).filter(Boolean);
+  const runs = allRuns.filter((run) => isVisibleRemoteEvent(run, state.feedClearedRunIds));
+  const helpRequests = allHelpRequests.filter((help) => isVisibleRemoteEvent(help, state.feedClearedHelpIds));
 
   activeStudents.textContent = students.filter((student) => student.status === "active").length;
   successRuns.textContent = allRuns.filter((run) => run.status === "success").length;
@@ -584,7 +605,11 @@ document.querySelector("#helpRequest").addEventListener("click", async () => {
 
 document.querySelector("#clearFeed").addEventListener("click", () => {
   state.feedClearedAt = Date.now();
+  state.feedClearedRunIds = Array.from(new Set([...state.feedClearedRunIds, ...state.latestRemoteRunIds]));
+  state.feedClearedHelpIds = Array.from(new Set([...state.feedClearedHelpIds, ...state.latestRemoteHelpIds]));
   localStorage.setItem("afterClassFeedClearedAt", String(state.feedClearedAt));
+  localStorage.setItem("afterClassFeedClearedRunIds", JSON.stringify(state.feedClearedRunIds));
+  localStorage.setItem("afterClassFeedClearedHelpIds", JSON.stringify(state.feedClearedHelpIds));
   feedItems.length = 0;
   renderFeed();
 });
