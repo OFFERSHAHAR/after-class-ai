@@ -121,6 +121,7 @@ after-class-ai/
 - [שרת כיתה להרצת הממשק ו-n8n](docs/classroom-server.md)
 - [התמונה המלאה של חוויית מורה ותלמיד](docs/full-classroom-experience.md)
 - [זרימת עבודה אמיתית לשיעור](docs/real-class-workflow-flow.md)
+- [הפעלה בלחיצה אחת לשיעור](docs/tomorrow-class-one-click.md)
 - [Roadmap](docs/roadmap.md)
 
 ## מצגת למורה
@@ -134,3 +135,6 @@ http://127.0.0.1:5173/after-class-ai/teacher-pitch/
 ## סטטוס
 
 זהו MVP חזותי ראשוני. הוא מתאים להצגה, שיחה עם מורה/שותפים, ותכנון המשך פיתוח.
+  classroom-run/
+    START_CLASS_TOMORROW.bat
+    SHOW_PUBLIC_LINKS.bat
