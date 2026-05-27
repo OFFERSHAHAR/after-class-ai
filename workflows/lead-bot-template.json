@@ -3,6 +3,7 @@
   "nodes": [
     {
       "parameters": {
+        "httpMethod": "POST",
         "path": "after-class-lead",
         "responseMode": "lastNode",
         "options": {}
@@ -23,17 +24,6 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [520, 300]
-    },
-    {
-      "parameters": {
-        "respondWith": "json",
-        "responseBody": "={{ $json }}"
-      },
-      "id": "respond-to-student",
-      "name": "Return Result",
-      "type": "n8n-nodes-base.respondToWebhook",
-      "typeVersion": 1,
-      "position": [800, 300]
     }
   ],
   "connections": {
@@ -42,17 +32,6 @@
         [
           {
             "node": "Demo AI Classifier",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Demo AI Classifier": {
-      "main": [
-        [
-          {
-            "node": "Return Result",
             "type": "main",
             "index": 0
           }

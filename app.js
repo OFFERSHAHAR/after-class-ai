@@ -406,6 +406,17 @@ document.querySelectorAll(".nav-item").forEach((button) => {
   button.addEventListener("click", () => setView(button.dataset.view));
 });
 
+document.querySelectorAll(".template-download").forEach((button) => {
+  button.addEventListener("click", () => {
+    const link = document.createElement("a");
+    link.href = button.dataset.templateUrl;
+    link.download = button.dataset.templateName;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  });
+});
+
 enterStudentButton.addEventListener("click", enterStudentMode);
 
 enterTeacherButton.addEventListener("click", () => {

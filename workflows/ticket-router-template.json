@@ -1,0 +1,45 @@
+{
+  "name": "After Class AI - Ticket Router Template",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "after-class-ticket-router",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "ticket-router-webhook",
+      "name": "Ticket Router Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "webhookId": "after-class-ticket-router"
+    },
+    {
+      "parameters": {
+        "jsCode": "const ticket = $json.body || $json;\nconst text = String(ticket.message || ticket.subject || '').toLowerCase();\nlet team = 'general-support';\nlet priority = 'normal';\n\n// STUDENT EDIT AREA:\n// Add more routing rules here.\nif (text.includes('refund') || text.includes('billing') || text.includes('payment')) team = 'finance';\nif (text.includes('error') || text.includes('bug') || text.includes('broken')) team = 'technical-support';\nif (text.includes('urgent') || text.includes('critical') || text.includes('down')) priority = 'high';\n\nreturn [{\n  json: {\n    ticket_id: ticket.ticket_id || `ticket-${Date.now()}`,\n    customer: ticket.name || 'Customer',\n    routed_to: team,\n    priority,\n    original_message: ticket.message || '',\n    classroom_note: 'Ticket was routed by simple rules for class practice.'\n  }\n}];"
+      },
+      "id": "student-edit-router",
+      "name": "Student Edit Area - Router Rules",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [540, 300]
+    }
+  ],
+  "connections": {
+    "Ticket Router Webhook": {
+      "main": [
+        [
+          {
+            "node": "Student Edit Area - Router Rules",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "name": "After Class AI - Webhook Echo Template",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "after-class-echo",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "webhook-echo-input",
+      "name": "Echo Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "webhookId": "after-class-echo"
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $json.body || $json;\nreturn [{\n  json: {\n    ok: true,\n    received: input,\n    student_task: 'Change the message field and run the test again.',\n    classroom_note: 'Echo template returned the incoming data.'\n  }\n}];"
+      },
+      "id": "echo-response",
+      "name": "Student Edit Area - Echo Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [540, 300]
+    }
+  ],
+  "connections": {
+    "Echo Webhook": {
+      "main": [
+        [
+          {
+            "node": "Student Edit Area - Echo Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}
