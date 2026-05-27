@@ -184,16 +184,28 @@ function getState(sessionCode) {
 function joinSession(data) {
   const sessions = readObjects(SHEETS.sessions);
   const session = sessions.find((row) => row.code === data.sessionCode);
+  const studentName = String(data.name || '').trim();
 
   if (!session) return { ok: false, error: 'Session code not found' };
   if (session.join_open !== true && session.join_open !== 'TRUE') {
     return { ok: false, error: 'Joining is closed for this session' };
   }
+  if (!studentName) return { ok: false, error: 'Student name is required' };
+
+  const existingStudent = readObjects(SHEETS.students).find((row) =>
+    row.session_id === session.id &&
+    String(row.name || '').trim().toLowerCase() === studentName.toLowerCase() &&
+    row.status === 'active'
+  );
+
+  if (existingStudent) {
+    return { ok: true, student: existingStudent, session, reused: true };
+  }
 
   const student = {
     id: 'student-' + Date.now(),
     session_id: session.id,
-    name: data.name || 'תלמיד/ה',
+    name: studentName,
     joined_at: new Date(),
     workflow_id: '',
     workflow_url: '',

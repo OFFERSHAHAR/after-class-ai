@@ -31,6 +31,7 @@ const successRuns = document.querySelector("#successRuns");
 const needsHelp = document.querySelector("#needsHelp");
 const connectionNote = document.querySelector("#connectionNote");
 const studentActionNote = document.querySelector("#studentActionNote");
+const studentNameInput = document.querySelector("#studentName");
 const sessionCodeInput = document.querySelector("#sessionCode");
 const joinButton = document.querySelector("#joinLab");
 const runButton = document.querySelector("#studentRun");
@@ -52,7 +53,20 @@ const guidedFix = document.querySelector("#guidedFix");
 const lessonPreviewTitle = document.querySelector("#lessonPreviewTitle");
 const lessonPreviewGoal = document.querySelector("#lessonPreviewGoal");
 
-sessionCodeInput.value = defaultSessionCode;
+let savedStudent = null;
+try {
+  savedStudent = JSON.parse(localStorage.getItem("afterClassStudent") || "null");
+} catch {
+  localStorage.removeItem("afterClassStudent");
+}
+if (savedStudent?.name) studentNameInput.value = savedStudent.name;
+sessionCodeInput.value = savedStudent?.sessionCode || defaultSessionCode;
+if (savedStudent?.id) {
+  state.student = savedStudent;
+  joinButton.textContent = "מחובר";
+  joinButton.disabled = true;
+  setAction("זיהינו אותך מהחיבור הקודם. אפשר להמשיך לעבוד.", "success");
+}
 webhookUrlInput.value = config.n8nWebhookUrl || "";
 if (openN8nLink) {
   const workspaceUrl = config.n8nWorkspaceUrl || (config.n8nWebhookUrl || "").replace(/\/webhook.*$/, "") || "http://127.0.0.1:5678";
@@ -486,12 +500,19 @@ document.querySelector("#joinLab").addEventListener("click", async () => {
 
   const release = setButtonBusy(joinButton, "מצטרף...");
   setAction("מצרף אותך לשיעור ורושם בגיליון...", "busy");
-  const name = document.querySelector("#studentName").value.trim() || "תלמיד/ה";
+  const name = studentNameInput.value.trim();
   const sessionCode = sessionCodeInput.value.trim() || defaultSessionCode;
+
+  if (!name) {
+    setAction("צריך לכתוב שם לפני הצטרפות לשיעור.", "error");
+    release();
+    return;
+  }
 
   if (!apiUrl) {
     activeStudents.textContent = Number(activeStudents.textContent) + 1;
-    state.student = { id: `demo-${Date.now()}`, name };
+    state.student = { id: `demo-${Date.now()}`, name, sessionCode };
+    localStorage.setItem("afterClassStudent", JSON.stringify(state.student));
     setAction("הצטרפת במצב דמו.", "success");
     joinButton.textContent = "מחובר";
     joinButton.disabled = true;
@@ -507,7 +528,9 @@ document.querySelector("#joinLab").addEventListener("click", async () => {
     }
 
     state.student = payload.student;
+    state.student.sessionCode = sessionCode;
     state.session = payload.session;
+    localStorage.setItem("afterClassStudent", JSON.stringify(state.student));
     setConnection("הצטרפת לשיעור. הפעילות שלך נשמרת בגיליון.", "connected");
     setAction("הצטרפת בהצלחה. אפשר להוריד תרגיל או להריץ בדיקה.", "success");
     joinButton.textContent = "מחובר";
