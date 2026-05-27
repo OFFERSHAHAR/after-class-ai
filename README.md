@@ -109,6 +109,7 @@ after-class-ai/
 - [Google Sheets כ-backend זמני](docs/google-sheets-backend.md)
 - [פקודת הקמת Google Sheets](docs/sheets-setup-command.md)
 - [ערכת הרצה לחניך](docs/student-kit.md)
+- [תוכנית חינמית שלב אחר שלב](docs/free-first-step-plan.md)
 - [Roadmap](docs/roadmap.md)
 
 ## מצגת למורה
