@@ -60,6 +60,9 @@ const lessonPreviewTitle = document.querySelector("#lessonPreviewTitle");
 const lessonPreviewGoal = document.querySelector("#lessonPreviewGoal");
 const saveTemplateButton = document.querySelector("#saveTemplate");
 const teacherTemplateGrid = document.querySelector("#teacherTemplateGrid");
+const appToast = document.querySelector("#appToast");
+const toastTitle = document.querySelector("#toastTitle");
+const toastMessage = document.querySelector("#toastMessage");
 const roleGate = document.querySelector("#roleGate");
 const enterStudentButton = document.querySelector("#enterStudent");
 const enterTeacherButton = document.querySelector("#enterTeacher");
@@ -123,6 +126,20 @@ function setButtonBusy(button, busyText) {
 function setChatbotResult(message, status = "") {
   chatbotResult.textContent = message;
   chatbotResult.className = `result-box ${status}`.trim();
+}
+
+function showToast(title, message) {
+  if (!appToast) return;
+  toastTitle.textContent = title;
+  toastMessage.textContent = message;
+  appToast.hidden = false;
+  appToast.classList.remove("show");
+  window.requestAnimationFrame(() => appToast.classList.add("show"));
+  window.clearTimeout(showToast.timer);
+  showToast.timer = window.setTimeout(() => {
+    appToast.hidden = true;
+    appToast.classList.remove("show");
+  }, 5200);
 }
 
 function setView(viewId) {
@@ -627,6 +644,7 @@ document.querySelector("#joinLab").addEventListener("click", async () => {
     activeStudents.textContent = Number(activeStudents.textContent) + 1;
     state.student = { id: `demo-${Date.now()}`, name, sessionCode };
     localStorage.setItem("afterClassStudent", JSON.stringify(state.student));
+    showToast(`שלום ${name}`, "המעבדה זיהתה אותך. סוכן התרגול מוכן להפעיל את מסלול הלמידה שלך.");
     setAction("הצטרפת במצב דמו.", "success");
     joinButton.textContent = "מחובר";
     joinButton.disabled = true;
@@ -645,6 +663,7 @@ document.querySelector("#joinLab").addEventListener("click", async () => {
     state.student.sessionCode = sessionCode;
     state.session = payload.session;
     localStorage.setItem("afterClassStudent", JSON.stringify(state.student));
+    showToast(`שלום ${state.student.name || name}`, "פרופיל הלמידה נטען. אפשר להוריד תרגיל ולהתחיל להריץ ניסויים.");
     setConnection("הצטרפת לשיעור. הפעילות שלך נשמרת בגיליון.", "connected");
     setAction("הצטרפת בהצלחה. אפשר להוריד תרגיל או להריץ בדיקה.", "success");
     joinButton.textContent = "מחובר";

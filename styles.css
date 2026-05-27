@@ -681,6 +681,61 @@ button[disabled] {
   line-height: 1.6;
 }
 
+.toast {
+  position: fixed;
+  left: 24px;
+  bottom: 24px;
+  z-index: 40;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 12px;
+  align-items: center;
+  width: min(420px, calc(100% - 36px));
+  padding: 14px 16px;
+  border: 1px solid #8fd6aa;
+  border-radius: 8px;
+  background: #f1fbf5;
+  color: #124f2d;
+  box-shadow: 0 18px 48px rgba(18, 33, 36, 0.18);
+}
+
+.toast.show {
+  animation: toast-in 0.28s ease-out;
+}
+
+.toast-mark {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 900;
+}
+
+.toast strong,
+.toast p {
+  margin: 0;
+}
+
+.toast p {
+  margin-top: 3px;
+  line-height: 1.5;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .template-card {
   display: grid;
   gap: 12px;
