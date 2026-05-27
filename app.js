@@ -10,6 +10,7 @@ const state = {
   teacherMode: localStorage.getItem("afterClassTeacherMode") === "true",
   uploadedWorkflow: null,
   feedClearedAt: Number(localStorage.getItem("afterClassFeedClearedAt") || 0),
+  activeExercise: null,
 };
 
 const feedItems = [
@@ -181,6 +182,42 @@ function callApi(action, params = {}) {
   });
 }
 
+function postFormApi(action, params = {}) {
+  if (!apiUrl) return Promise.resolve({ ok: false, demo: true });
+
+  return new Promise((resolve) => {
+    const iframeName = `afterClassPost_${Date.now()}_${Math.floor(Math.random() * 100000)}`;
+    const iframe = document.createElement("iframe");
+    iframe.name = iframeName;
+    iframe.hidden = true;
+
+    const form = document.createElement("form");
+    form.method = "POST";
+    form.action = apiUrl;
+    form.target = iframeName;
+    form.hidden = true;
+
+    const fields = { action, ...params };
+    Object.entries(fields).forEach(([key, value]) => {
+      const input = document.createElement("input");
+      input.type = "hidden";
+      input.name = key;
+      input.value = value == null ? "" : String(value);
+      form.appendChild(input);
+    });
+
+    document.body.appendChild(iframe);
+    document.body.appendChild(form);
+    form.submit();
+
+    window.setTimeout(() => {
+      form.remove();
+      iframe.remove();
+      resolve({ ok: true });
+    }, 1800);
+  });
+}
+
 function addDemoRun(name = studentNames[Math.floor(Math.random() * studentNames.length)]) {
   const ok = Math.random() > 0.28;
   pushFeed({
@@ -199,6 +236,7 @@ function updateDashboardFromRemote(payload) {
   if (!payload || !payload.ok) return;
 
   state.session = payload.session;
+  state.activeExercise = payload.activeExercise || null;
   const students = payload.students || [];
   const allRuns = payload.runs || [];
   const allHelpRequests = payload.helpRequests || [];
@@ -282,6 +320,17 @@ function downloadTextFile(fileName, text, type = "application/json") {
   link.click();
   URL.revokeObjectURL(link.href);
   link.remove();
+}
+
+function getPublishedWorkflow() {
+  if (state.uploadedWorkflow) return state.uploadedWorkflow;
+  if (state.activeExercise?.workflow_json) {
+    return {
+      name: state.activeExercise.workflow_file_name || state.activeExercise.template_file || "class-workflow.json",
+      content: state.activeExercise.workflow_json,
+    };
+  }
+  return null;
 }
 
 function updateLessonPreview() {
@@ -408,8 +457,9 @@ document.querySelector("#downloadWorkflow").addEventListener("click", () => {
   const release = setButtonBusy(downloadButton, "מוריד...");
   setAction("מוריד את תרגיל הכיתה הנוכחי...", "busy");
 
-  if (state.uploadedWorkflow) {
-    downloadTextFile(state.uploadedWorkflow.name, state.uploadedWorkflow.content);
+  const publishedWorkflow = getPublishedWorkflow();
+  if (publishedWorkflow) {
+    downloadTextFile(publishedWorkflow.name, publishedWorkflow.content);
   } else {
     const link = document.createElement("a");
     link.href = config.currentWorkflowUrl || "workflows/current-class-workflow.json";
@@ -564,8 +614,14 @@ document.querySelector("#workflowFileInput").addEventListener("change", async (e
   field.addEventListener("input", updateLessonPreview);
 });
 
-document.querySelector("#publishLesson").addEventListener("click", () => {
+document.querySelector("#publishLesson").addEventListener("click", async () => {
   updateLessonPreview();
+  if (!state.uploadedWorkflow) {
+    setTeacherNote("צריך להעלות קובץ תרגיל לפני פרסום לכיתה.", "error");
+    return;
+  }
+
+  const release = setButtonBusy(document.querySelector("#publishLesson"), "מפרסם...");
   localStorage.setItem(
     "afterClassLesson",
     JSON.stringify({
@@ -576,14 +632,34 @@ document.querySelector("#publishLesson").addEventListener("click", () => {
       workflowName: state.uploadedWorkflow?.name || config.currentWorkflowName,
     })
   );
-  setTeacherNote("השיעור פורסם מקומית. תלמידים במחשב הזה יקבלו את התרגיל הנוכחי.", "success");
-  pushFeed({
-    status: "ok",
-    icon: "✓",
-    name: "מורה",
-    title: "תרגיל פורסם לכיתה",
-    detail: lessonTitle.value.trim() || "שיעור חדש",
-  });
+
+  try {
+    if (apiUrl) {
+      await postFormApi("publishExercise", {
+        sessionCode: sessionCodeInput.value.trim() || defaultSessionCode,
+        title: lessonTitle.value.trim(),
+        goal: lessonGoal.value.trim(),
+        description: guidedFix.value.trim(),
+        webhookUrl: webhookUrlInput.value.trim(),
+        workflowFileName: state.uploadedWorkflow.name,
+        workflowJson: state.uploadedWorkflow.content,
+      });
+      await refreshState();
+    }
+
+    setTeacherNote("השיעור פורסם. כפתור הורד תרגיל יוריד עכשיו את הקובץ שהמורה העלה.", "success");
+    pushFeed({
+      status: "ok",
+      icon: "✓",
+      name: "מורה",
+      title: "תרגיל פורסם לכיתה",
+      detail: lessonTitle.value.trim() || "שיעור חדש",
+    });
+  } catch (error) {
+    setTeacherNote(error.message || "פרסום התרגיל נכשל.", "error");
+  } finally {
+    release();
+  }
 });
 
 document.querySelector("#downloadLessonPlan").addEventListener("click", () => {

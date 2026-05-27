@@ -45,11 +45,11 @@ const SHEET_SCHEMAS = {
     ],
   },
   exercises: {
-    headers: ['id', 'title', 'level', 'description', 'template_file', 'status'],
+    headers: ['id', 'title', 'level', 'description', 'template_file', 'status', 'workflow_file_name', 'workflow_json', 'webhook_url', 'published_at'],
     rows: [
-      ['exercise-lead-bot', 'Lead Bot', 'Intermediate', 'Webhook classifies a lead and returns a result', 'workflows/lead-bot-template.json', 'active'],
-      ['exercise-webhook-echo', 'Webhook Echo', 'Beginner', 'Receive JSON and return a clean response', 'workflows/webhook-echo-template.json', 'active'],
-      ['exercise-ticket-router', 'Ticket Router', 'Business', 'Route tickets by topic and urgency', 'workflows/ticket-router-template.json', 'active'],
+      ['exercise-lead-bot', 'Lead Bot', 'Intermediate', 'Webhook classifies a lead and returns a result', 'workflows/lead-bot-template.json', 'active', '', '', '', ''],
+      ['exercise-webhook-echo', 'Webhook Echo', 'Beginner', 'Receive JSON and return a clean response', 'workflows/webhook-echo-template.json', 'active', '', '', '', ''],
+      ['exercise-ticket-router', 'Ticket Router', 'Business', 'Route tickets by topic and urgency', 'workflows/ticket-router-template.json', 'active', '', '', '', ''],
     ],
   },
   runs: {
@@ -137,9 +137,9 @@ function doGet(event) {
 }
 
 function doPost(event) {
-  const body = event.postData && event.postData.contents
-    ? JSON.parse(event.postData.contents)
-    : {};
+  const body = (event.parameter && event.parameter.action)
+    ? event.parameter
+    : ((event.postData && event.postData.contents) ? JSON.parse(event.postData.contents) : {});
   const action = body.action || 'state';
   const payload = route(action, body);
   return jsonResponse(payload);
@@ -151,6 +151,7 @@ function route(action, data) {
   if (action === 'createRun') return createRun(data);
   if (action === 'reportRun') return reportRun(data);
   if (action === 'runN8nTest') return runN8nTest(data);
+  if (action === 'publishExercise') return publishExercise(data);
   if (action === 'requestHelp') return requestHelp(data);
   if (action === 'createSession') return createSession(data);
   return { ok: false, error: 'Unknown action: ' + action };
@@ -173,8 +174,11 @@ function getState(sessionCode) {
   const helpRequests = readObjects(SHEETS.helpRequests)
     .filter((row) => row.session_id === session.id && row.status !== 'resolved');
   const exercises = readObjects(SHEETS.exercises);
+  const activeExercise = exercises.find((exercise) => exercise.id === session.active_exercise_id)
+    || exercises.find((exercise) => exercise.status === 'active')
+    || null;
 
-  return { ok: true, session, students, runs, helpRequests, exercises };
+  return { ok: true, session, students, runs, helpRequests, exercises, activeExercise };
 }
 
 function joinSession(data) {
@@ -348,6 +352,53 @@ function createSession(data) {
   return { ok: true, session };
 }
 
+function publishExercise(data) {
+  data = data || {};
+  ensureSheetColumns(SHEETS.exercises, SHEET_SCHEMAS.exercises.headers);
+
+  const workflowJson = data.workflowJson || '';
+  if (!workflowJson) return { ok: false, error: 'Missing workflow JSON' };
+
+  try {
+    JSON.parse(workflowJson);
+  } catch (error) {
+    return { ok: false, error: 'Workflow file is not valid JSON' };
+  }
+
+  const sessions = readObjects(SHEETS.sessions);
+  const session = data.sessionId
+    ? sessions.find((row) => row.id === data.sessionId)
+    : sessions.find((row) => row.code === data.sessionCode) || sessions.find((row) => row.status === 'active');
+
+  if (!session) return { ok: false, error: 'No matching session found' };
+
+  const exercise = {
+    id: 'exercise-' + Date.now(),
+    title: data.title || data.workflowFileName || 'Class workflow',
+    level: data.level || 'Class',
+    description: data.description || data.goal || '',
+    template_file: data.workflowFileName || 'class-workflow.json',
+    status: 'active',
+    workflow_file_name: data.workflowFileName || 'class-workflow.json',
+    workflow_json: workflowJson,
+    webhook_url: data.webhookUrl || '',
+    published_at: new Date(),
+  };
+
+  const sheet = getSpreadsheet().getSheetByName(SHEETS.exercises);
+  const values = sheet.getDataRange().getValues();
+  const headers = values[0];
+  const statusIndex = headers.indexOf('status');
+  if (statusIndex !== -1 && values.length > 1) {
+    sheet.getRange(2, statusIndex + 1, values.length - 1, 1).setValue('archived');
+  }
+
+  appendObject(SHEETS.exercises, exercise);
+  updateObjectById(SHEETS.sessions, session.id, { active_exercise_id: exercise.id });
+
+  return { ok: true, exercise, sessionId: session.id };
+}
+
 function readObjects(sheetName) {
   const sheet = getSpreadsheet().getSheetByName(sheetName);
   if (!sheet) throw new Error('Missing sheet: ' + sheetName);
@@ -372,6 +423,44 @@ function appendObject(sheetName, object) {
   const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
   const row = headers.map((header) => object[header] === undefined ? '' : object[header]);
   sheet.appendRow(row);
+}
+
+function ensureSheetColumns(sheetName, requiredHeaders) {
+  const sheet = getSpreadsheet().getSheetByName(sheetName);
+  if (!sheet) throw new Error('Missing sheet: ' + sheetName);
+
+  const lastColumn = Math.max(sheet.getLastColumn(), 1);
+  const headers = sheet.getRange(1, 1, 1, lastColumn).getValues()[0];
+  requiredHeaders.forEach((header) => {
+    if (headers.indexOf(header) !== -1) return;
+    sheet.getRange(1, sheet.getLastColumn() + 1).setValue(header);
+    headers.push(header);
+  });
+}
+
+function updateObjectById(sheetName, id, patch) {
+  const sheet = getSpreadsheet().getSheetByName(sheetName);
+  if (!sheet) throw new Error('Missing sheet: ' + sheetName);
+
+  const values = sheet.getDataRange().getValues();
+  if (values.length < 2) return false;
+
+  const headers = values[0];
+  const idIndex = headers.indexOf('id');
+  if (idIndex === -1) return false;
+
+  for (let rowIndex = 1; rowIndex < values.length; rowIndex += 1) {
+    if (values[rowIndex][idIndex] !== id) continue;
+    Object.keys(patch).forEach((key) => {
+      const columnIndex = headers.indexOf(key);
+      if (columnIndex !== -1) {
+        sheet.getRange(rowIndex + 1, columnIndex + 1).setValue(patch[key]);
+      }
+    });
+    return true;
+  }
+
+  return false;
 }
 
 function jsonResponse(payload, callback) {
