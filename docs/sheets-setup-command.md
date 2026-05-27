@@ -42,7 +42,7 @@ help_requests
 1. פותחים את ה-Google Sheet:
 
 ```text
-https://docs.google.com/spreadsheets/d/19GOHx2oq1ZsnkggJ-r-8TGvYvhYle3sAWifAzmL-rwQ_/edit
+https://docs.google.com/spreadsheets/d/19GOHx2oq1ZsnkggJ-r-8TGvYvhYle3sAWifAzmL-rwQ/edit
 ```
 
 2. נכנסים ל:
@@ -109,4 +109,3 @@ After Class AI
 2. מקבלים URL
 3. מכניסים את ה-URL לממשק
 4. הכפתורים בממשק יוכלו לקרוא ולכתוב ל-Sheet
-

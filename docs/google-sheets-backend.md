@@ -29,13 +29,13 @@ After Class AI - Data
 ה-Sheet שהוגדר לפרויקט:
 
 ```text
-19GOHx2oq1ZsnkggJ-r-8TGvYvhYle3sAWifAzmL-rwQ_
+19GOHx2oq1ZsnkggJ-r-8TGvYvhYle3sAWifAzmL-rwQ
 ```
 
 קישור ישיר:
 
 ```text
-https://docs.google.com/spreadsheets/d/19GOHx2oq1ZsnkggJ-r-8TGvYvhYle3sAWifAzmL-rwQ_/edit
+https://docs.google.com/spreadsheets/d/19GOHx2oq1ZsnkggJ-r-8TGvYvhYle3sAWifAzmL-rwQ/edit
 ```
 
 ובתוכו יוצרים 5 לשוניות:
@@ -199,7 +199,7 @@ docs/sheets-setup-command.md
 בקובץ `google-apps-script/Code.gs` כבר מוגדר:
 
 ```javascript
-const SPREADSHEET_ID = '19GOHx2oq1ZsnkggJ-r-8TGvYvhYle3sAWifAzmL-rwQ_';
+const SPREADSHEET_ID = '19GOHx2oq1ZsnkggJ-r-8TGvYvhYle3sAWifAzmL-rwQ';
 ```
 
 אם מעבירים את הפרויקט ל-Sheet אחר, מחליפים רק את הערך הזה.

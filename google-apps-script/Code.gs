@@ -6,7 +6,7 @@ const SHEETS = {
   helpRequests: 'help_requests',
 };
 
-const SPREADSHEET_ID = '19GOHx2oq1ZsnkggJ-r-8TGvYvhYle3sAWifAzmL-rwQ_';
+const SPREADSHEET_ID = '19GOHx2oq1ZsnkggJ-r-8TGvYvhYle3sAWifAzmL-rwQ';
 
 const BRAND = {
   black: '#111111',

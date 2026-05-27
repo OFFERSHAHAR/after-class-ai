@@ -39,7 +39,7 @@
 פותחים את הגיליון:
 
 ```text
-https://docs.google.com/spreadsheets/d/19GOHx2oq1ZsnkggJ-r-8TGvYvhYle3sAWifAzmL-rwQ_/edit
+https://docs.google.com/spreadsheets/d/19GOHx2oq1ZsnkggJ-r-8TGvYvhYle3sAWifAzmL-rwQ/edit
 ```
 
 נכנסים אל:
@@ -196,4 +196,3 @@ runs
 צריך להוכיח שהכיתה יכולה לעבוד סביב רעיון אחד:
 
 סביבת תרגול משותפת, חינמית להתחלה, שמורידה חסמים מהתלמידים ונותנת למורה תמונת מצב.
-
