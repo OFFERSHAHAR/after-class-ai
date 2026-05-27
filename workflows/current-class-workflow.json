@@ -5,14 +5,17 @@
       "parameters": {
         "httpMethod": "POST",
         "path": "after-class-support-chat",
-        "responseMode": "responseNode",
+        "responseMode": "lastNode",
         "options": {}
       },
       "id": "support-chat-webhook",
       "name": "Support Chat Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
-      "position": [180, 300],
+      "position": [
+        180,
+        300
+      ],
       "webhookId": "after-class-support-chat"
     },
     {
@@ -23,18 +26,10 @@
       "name": "Student Edit Area - Canned Replies",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [500, 300]
-    },
-    {
-      "parameters": {
-        "respondWith": "json",
-        "responseBody": "={{ $json }}"
-      },
-      "id": "return-chatbot-answer",
-      "name": "Return Chatbot Answer",
-      "type": "n8n-nodes-base.respondToWebhook",
-      "typeVersion": 1,
-      "position": [820, 300]
+      "position": [
+        500,
+        300
+      ]
     }
   ],
   "connections": {
@@ -43,17 +38,6 @@
         [
           {
             "node": "Student Edit Area - Canned Replies",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Student Edit Area - Canned Replies": {
-      "main": [
-        [
-          {
-            "node": "Return Chatbot Answer",
             "type": "main",
             "index": 0
           }
