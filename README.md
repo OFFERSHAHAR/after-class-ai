@@ -15,6 +15,7 @@
 - קובץ Docker Compose עתידי להרצת n8n מקומי
 - דוגמת workflow לייבוא ל-n8n
 - תכנון ותבניות Google Sheets כ-backend זמני ל-MVP
+- Student Kit להרצה מקומית של חניכים אחרי השיעור
 
 ## הרצה מקומית של הממשק
 
@@ -72,6 +73,11 @@ after-class-ai/
     Code.gs
   sheets/
     *.csv
+  student-kit/
+    run-local.bat
+    templates/
+    my-workflows/
+    notes/
   workflows/
     lead-bot-template.json
 ```
@@ -92,6 +98,7 @@ after-class-ai/
 - [הצעה למורה](docs/teacher-proposal.md)
 - [מדריך תפעול למורה ותלמידים](docs/teacher-operations-guide.md)
 - [Google Sheets כ-backend זמני](docs/google-sheets-backend.md)
+- [ערכת הרצה לחניך](docs/student-kit.md)
 - [Roadmap](docs/roadmap.md)
 
 ## סטטוס

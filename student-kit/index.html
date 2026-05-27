@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>After Class AI - Student Kit</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, "Segoe UI", sans-serif;
+        background: #f7f9f8;
+        color: #152022;
+      }
+
+      main {
+        width: min(980px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 36px 0;
+      }
+
+      h1 {
+        margin: 0 0 8px;
+        font-size: 2rem;
+      }
+
+      p {
+        color: #5d696d;
+        line-height: 1.7;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+        margin-top: 24px;
+      }
+
+      .card {
+        min-height: 170px;
+        padding: 18px;
+        border: 1px solid #d8e0df;
+        border-radius: 8px;
+        background: #fff;
+        box-shadow: 0 14px 34px rgba(19, 35, 38, 0.08);
+      }
+
+      .card h2 {
+        margin: 0 0 8px;
+        font-size: 1.1rem;
+      }
+
+      code {
+        display: inline-block;
+        padding: 3px 7px;
+        border-radius: 6px;
+        background: #e8f1f0;
+        color: #086f70;
+      }
+
+      .steps {
+        margin-top: 24px;
+        padding: 18px;
+        border: 1px solid #d8e0df;
+        border-radius: 8px;
+        background: #fff;
+      }
+
+      li {
+        margin: 10px 0;
+      }
+
+      @media (max-width: 760px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>After Class AI - ערכת חניך</h1>
+      <p>
+        זהו אזור תרגול מקומי. כאן אפשר לשמור תבניות n8n מהשיעור, לייבא אותן ל-n8n,
+        ולבנות גרסאות אישיות גם אחרי שהכיתה הסתיימה.
+      </p>
+
+      <section class="grid">
+        <article class="card">
+          <h2>תבניות מהשיעור</h2>
+          <p>שמור workflows שהמורה שלח בתוך <code>templates/</code>.</p>
+        </article>
+        <article class="card">
+          <h2>העבודות שלי</h2>
+          <p>שמור גרסאות אישיות בתוך <code>my-workflows/</code>.</p>
+        </article>
+        <article class="card">
+          <h2>הערות וניסויים</h2>
+          <p>שמור payloads, תובנות ותקלות בתוך <code>notes/</code>.</p>
+        </article>
+      </section>
+
+      <section class="steps">
+        <h2>איך ממשיכים לתרגל</h2>
+        <ol>
+          <li>מורידים תבנית workflow מהשיעור או מהממשק.</li>
+          <li>שומרים אותה בתיקיית <code>templates/</code>.</li>
+          <li>פותחים n8n ומייבאים את הקובץ.</li>
+          <li>שומרים עותק אישי ומשנים אותו בלי לפגוע בתבנית המקורית.</li>
+          <li>אם יש שאלה, שומרים צילום מסך או הערה בתיקיית <code>notes/</code>.</li>
+        </ol>
+      </section>
+    </main>
+  </body>
+</html>
+
