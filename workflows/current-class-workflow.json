@@ -3,6 +3,7 @@
   "nodes": [
     {
       "parameters": {
+        "httpMethod": "POST",
         "path": "after-class-support-chat",
         "responseMode": "lastNode",
         "options": {}
