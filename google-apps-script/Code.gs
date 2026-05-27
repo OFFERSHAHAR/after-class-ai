@@ -244,7 +244,16 @@ function reportRun(data) {
   return { ok: true, run, session };
 }
 
+function authorizeExternalRequest() {
+  const response = UrlFetchApp.fetch('https://example.com', {
+    method: 'get',
+    muteHttpExceptions: true,
+  });
+  return response.getResponseCode();
+}
+
 function runN8nTest(data) {
+  data = data || {};
   const sessions = readObjects(SHEETS.sessions);
   const session = data.sessionId
     ? sessions.find((row) => row.id === data.sessionId)
