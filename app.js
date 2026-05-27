@@ -9,6 +9,7 @@ const state = {
   student: null,
   teacherMode: localStorage.getItem("afterClassTeacherMode") === "true",
   uploadedWorkflow: null,
+  feedClearedAt: Number(localStorage.getItem("afterClassFeedClearedAt") || 0),
 };
 
 const feedItems = [
@@ -130,6 +131,14 @@ function pushFeed(item) {
   renderFeed();
 }
 
+function isAfterFeedClear(value) {
+  if (!state.feedClearedAt) return true;
+  if (!value) return false;
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return false;
+  return date.getTime() > state.feedClearedAt;
+}
+
 function callApi(action, params = {}) {
   if (!apiUrl) return Promise.resolve({ ok: false, demo: true });
 
@@ -191,12 +200,14 @@ function updateDashboardFromRemote(payload) {
 
   state.session = payload.session;
   const students = payload.students || [];
-  const runs = payload.runs || [];
-  const helpRequests = payload.helpRequests || [];
+  const allRuns = payload.runs || [];
+  const allHelpRequests = payload.helpRequests || [];
+  const runs = allRuns.filter((run) => isAfterFeedClear(run.created_at));
+  const helpRequests = allHelpRequests.filter((help) => isAfterFeedClear(help.created_at));
 
   activeStudents.textContent = students.filter((student) => student.status === "active").length;
-  successRuns.textContent = runs.filter((run) => run.status === "success").length;
-  needsHelp.textContent = helpRequests.length;
+  successRuns.textContent = allRuns.filter((run) => run.status === "success").length;
+  needsHelp.textContent = allHelpRequests.length;
 
   feedItems.length = 0;
   runs.slice(0, 8).forEach((run) => {
@@ -221,7 +232,7 @@ function updateDashboardFromRemote(payload) {
     });
   });
 
-  if (!feedItems.length) {
+  if (!feedItems.length && !state.feedClearedAt) {
     feedItems.push({
       status: "run",
       icon: "…",
@@ -494,6 +505,8 @@ document.querySelector("#helpRequest").addEventListener("click", async () => {
 });
 
 document.querySelector("#clearFeed").addEventListener("click", () => {
+  state.feedClearedAt = Date.now();
+  localStorage.setItem("afterClassFeedClearedAt", String(state.feedClearedAt));
   feedItems.length = 0;
   renderFeed();
 });
