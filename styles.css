@@ -657,7 +657,7 @@ button[disabled] {
   place-items: center;
   padding: 20px;
   background: rgba(12, 22, 24, 0.42);
-  z-index: 20;
+  z-index: 70;
 }
 
 .modal-card {
