@@ -247,6 +247,23 @@ document.querySelector("#studentRun").addEventListener("click", async () => {
   }
 });
 
+document.querySelector("#downloadWorkflow").addEventListener("click", () => {
+  const link = document.createElement("a");
+  link.href = "workflows/lead-bot-template.json";
+  link.download = "after-class-ai-lead-bot-template.json";
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+
+  pushFeed({
+    status: "run",
+    icon: "…",
+    name: "תלמיד",
+    title: "הורדת תבנית",
+    detail: "קובץ התרגיל ירד למחשב וניתן לייבא אותו לתוך n8n.",
+  });
+});
+
 document.querySelector("#joinLab").addEventListener("click", async () => {
   const name = document.querySelector("#studentName").value.trim() || "תלמיד/ה";
   const sessionCode = sessionCodeInput.value.trim() || defaultSessionCode;
