@@ -115,7 +115,7 @@ function styleAfterClassSheets() {
 function doGet(event) {
   const action = event.parameter.action || 'state';
   const payload = route(action, event.parameter);
-  return jsonResponse(payload);
+  return jsonResponse(payload, event.parameter.callback);
 }
 
 function doPost(event) {
@@ -253,7 +253,13 @@ function appendObject(sheetName, object) {
   sheet.appendRow(row);
 }
 
-function jsonResponse(payload) {
+function jsonResponse(payload, callback) {
+  if (callback) {
+    return ContentService
+      .createTextOutput(callback + '(' + JSON.stringify(payload) + ');')
+      .setMimeType(ContentService.MimeType.JAVASCRIPT);
+  }
+
   return ContentService
     .createTextOutput(JSON.stringify(payload))
     .setMimeType(ContentService.MimeType.JSON);

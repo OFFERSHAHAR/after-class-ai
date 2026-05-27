@@ -372,6 +372,25 @@ button {
   padding: 0 12px;
 }
 
+.connection-note {
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #fff7e6;
+  color: #725100;
+  font-size: 0.9rem;
+}
+
+.connection-note.connected {
+  background: #e7f6ec;
+  color: #136b3a;
+}
+
+.connection-note.error {
+  background: #ffe9e9;
+  color: #9a1f1f;
+}
+
 .pill,
 .template-tag {
   display: inline-flex;

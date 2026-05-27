@@ -110,6 +110,7 @@ after-class-ai/
 - [פקודת הקמת Google Sheets](docs/sheets-setup-command.md)
 - [ערכת הרצה לחניך](docs/student-kit.md)
 - [תוכנית חינמית שלב אחר שלב](docs/free-first-step-plan.md)
+- [תוכנית הרצה עד מחר בבוקר](docs/tonight-launch-runbook.md)
 - [Roadmap](docs/roadmap.md)
 
 ## מצגת למורה

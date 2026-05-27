@@ -124,8 +124,10 @@
               <p>תלמיד מקבל סביבת ניסוי אישית, מריץ, והכיתה רואה את הסטטוס בלי לגעת בעבודה שלו.</p>
               <div class="form-row">
                 <input id="studentName" type="text" placeholder="שם תלמיד/ה" value="נועה" />
+                <input id="sessionCode" type="text" placeholder="קוד שיעור" value="AI-203" />
                 <button class="primary-btn" id="joinLab" type="button">הצטרפות</button>
               </div>
+              <p class="connection-note" id="connectionNote">מצב דמו. אחרי הכנסת כתובת הסקריפט, הנתונים יישמרו בגיליון.</p>
             </section>
 
             <section class="panel student-workflow">
@@ -145,6 +147,7 @@
               </div>
               <div class="run-controls">
                 <button class="primary-btn" id="studentRun" type="button">הרץ workflow</button>
+                <button class="ghost-btn" id="helpRequest" type="button">אני צריך עזרה</button>
                 <button class="ghost-btn" type="button">פתח ב־n8n</button>
               </div>
             </section>
@@ -176,6 +179,7 @@
       </main>
     </div>
 
+    <script src="config.js"></script>
     <script src="app.js"></script>
   </body>
 </html>
