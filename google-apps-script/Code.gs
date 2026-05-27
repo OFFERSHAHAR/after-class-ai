@@ -266,6 +266,8 @@ function jsonResponse(payload, callback) {
 }
 
 function getSpreadsheet() {
+  const activeSpreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  if (activeSpreadsheet) return activeSpreadsheet;
   return SpreadsheetApp.openById(SPREADSHEET_ID);
 }
 
