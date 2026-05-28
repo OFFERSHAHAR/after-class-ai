@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <title>After Class AI - הסבר קצר לתלמידים</title>
+    <style>
+      :root {
+        --ink: #152022;
+        --muted: #5f6b6e;
+        --line: #d8e0df;
+        --accent: #0f8f88;
+        --accent-dark: #086f70;
+        --blue: #2f66b1;
+        --soft: #f4f8f7;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: #eef3f1;
+        color: var(--ink);
+        font-family: Arial, "Segoe UI", sans-serif;
+        line-height: 1.65;
+      }
+
+      main {
+        width: min(900px, calc(100% - 36px));
+        margin: 0 auto;
+        padding: 30px 0 48px;
+      }
+
+      .hero,
+      section {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: #fff;
+      }
+
+      .hero {
+        min-height: 86vh;
+        display: grid;
+        align-content: center;
+        gap: 22px;
+        padding: 48px;
+        background:
+          linear-gradient(135deg, rgba(15, 143, 136, 0.14), rgba(255, 255, 255, 0.96)),
+          #fff;
+      }
+
+      .brand {
+        display: inline-flex;
+        justify-self: start;
+        padding: 12px 22px;
+        border-radius: 8px;
+        background: var(--ink);
+        color: #fff;
+        font-size: 30px;
+        font-weight: 900;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin-top: 0;
+      }
+
+      h1 {
+        max-width: 760px;
+        margin-bottom: 8px;
+        font-size: 54px;
+        line-height: 1.05;
+      }
+
+      .lead {
+        max-width: 760px;
+        color: var(--muted);
+        font-size: 22px;
+      }
+
+      section {
+        margin-top: 20px;
+        padding: 30px;
+        break-inside: avoid;
+      }
+
+      h2 {
+        margin-bottom: 14px;
+        font-size: 32px;
+      }
+
+      .cards,
+      .steps {
+        display: grid;
+        gap: 14px;
+      }
+
+      .cards {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .card,
+      .step,
+      .notice {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--soft);
+        padding: 18px;
+      }
+
+      .card strong,
+      .step strong {
+        display: block;
+        margin-bottom: 6px;
+        color: var(--accent-dark);
+        font-size: 20px;
+      }
+
+      .steps {
+        counter-reset: step;
+      }
+
+      .step {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 14px;
+        align-items: start;
+      }
+
+      .step::before {
+        counter-increment: step;
+        content: counter(step);
+        display: grid;
+        place-items: center;
+        width: 38px;
+        height: 38px;
+        border-radius: 8px;
+        background: var(--accent);
+        color: #fff;
+        font-weight: 900;
+      }
+
+      ul {
+        margin: 0;
+        padding-right: 20px;
+      }
+
+      li {
+        margin: 7px 0;
+      }
+
+      .notice {
+        background: #f3f7fd;
+        border-color: rgba(47, 102, 177, 0.25);
+      }
+
+      .link-box {
+        direction: ltr;
+        unicode-bidi: isolate;
+        display: block;
+        margin-top: 10px;
+        padding: 12px 14px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fbfcfc;
+        font-weight: 700;
+      }
+
+      .footer {
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      @media print {
+        body {
+          background: #fff;
+        }
+
+        main {
+          width: 100%;
+          padding: 0;
+        }
+
+        .hero,
+        section {
+          border-radius: 0;
+          border-left: 0;
+          border-right: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header class="hero">
+        <div class="brand">After Class AI</div>
+        <div>
+          <h1>כיתה לתרגול חי אחרי השיעור</h1>
+          <p class="lead">
+            במקום להישאר לבד עם תרגיל שלא עובד, יש לנו מרחב כיתתי שבו מורידים תרגיל, מריצים בדיקה, מקבלים חיווי, והמורה רואה מי צריך עזרה.
+          </p>
+        </div>
+      </header>
+
+      <section>
+        <h2>מה זה בעצם?</h2>
+        <div class="cards">
+          <article class="card">
+            <strong>מקום אחד לתרגול</strong>
+            <p>נכנסים לממשק הכיתה ומקבלים את התרגיל שהמורה הכין.</p>
+          </article>
+          <article class="card">
+            <strong>פחות הסתבכות טכנית</strong>
+            <p>לא צריך להבין פקודות מסובכות כדי לדעת אם התרגיל עבד.</p>
+          </article>
+          <article class="card">
+            <strong>עזרה בזמן אמת</strong>
+            <p>אם נתקעים, לוחצים בקשת עזרה והמורה רואה את זה.</p>
+          </article>
+        </div>
+      </section>
+
+      <section>
+        <h2>איך נכנסים?</h2>
+        <div class="steps">
+          <article class="step">
+            <div>
+              <strong>פותחים את אתר הכיתה</strong>
+              <p>הקישור יישלח בקבוצת הכיתה או יוצג בשיעור.</p>
+              <span class="link-box">https://after-class-ai.onrender.com/</span>
+            </div>
+          </article>
+          <article class="step">
+            <div>
+              <strong>לוחצים כניסת תלמיד</strong>
+              <p>אין צורך בקוד מורה. מסך המורה לא מיועד לתלמידים.</p>
+            </div>
+          </article>
+          <article class="step">
+            <div>
+              <strong>כותבים שם</strong>
+              <p>רצוי שם אמיתי כדי שהמורה ידע למי לעזור.</p>
+            </div>
+          </article>
+          <article class="step">
+            <div>
+              <strong>לוחצים הצטרפות</strong>
+              <p>מרגע זה המורה רואה שהצטרפתם למעבדה.</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section>
+        <h2>מה עושים בתרגול?</h2>
+        <div class="steps">
+          <article class="step">
+            <div>
+              <strong>מורידים תרגיל</strong>
+              <p>כפתור הורדת תרגיל מוריד את הקובץ הנכון שהמורה פרסם לשיעור.</p>
+            </div>
+          </article>
+          <article class="step">
+            <div>
+              <strong>פותחים סביבת עבודה</strong>
+              <p>התרגול נעשה בסביבת העבודה של השיעור.</p>
+            </div>
+          </article>
+          <article class="step">
+            <div>
+              <strong>מנסים לתקן</strong>
+              <p>המורה יסמן מה צריך לשנות בתרגיל. המטרה היא להבין, לא רק ללחוץ.</p>
+            </div>
+          </article>
+          <article class="step">
+            <div>
+              <strong>מריצים בדיקה</strong>
+              <p>לוחצים בדוק צאט בוט או סמן שהרצתי, ורואים חיווי בממשק.</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section>
+        <h2>מה המורה רואה?</h2>
+        <ul>
+          <li>מי הצטרף לשיעור.</li>
+          <li>מי הריץ בדיקה.</li>
+          <li>מי הצליח.</li>
+          <li>מי נכשל.</li>
+          <li>מי ביקש עזרה.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>אם משהו לא עובד</h2>
+        <div class="notice">
+          <ul>
+            <li>לא להילחץ.</li>
+            <li>ללחוץ על כפתור אני צריך עזרה.</li>
+            <li>להשאיר את המסך פתוח.</li>
+            <li>אם המורה מבקש, להגיד מה מופיע בחיווי.</li>
+            <li>לא למחוק קבצים ולא לשנות סיסמאות לבד בזמן השיעור.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section>
+        <h2>למה זה טוב לנו?</h2>
+        <div class="cards">
+          <article class="card">
+            <strong>יותר תרגול אמיתי</strong>
+            <p>מתרגלים כמו בסביבה אמיתית, לא רק צופים בהדגמה.</p>
+          </article>
+          <article class="card">
+            <strong>פחות זמן על תקלות</strong>
+            <p>הממשק נותן חיווי ברור והמורה רואה איפה נתקעים.</p>
+          </article>
+          <article class="card">
+            <strong>למידה משותפת</strong>
+            <p>הכיתה מתקדמת ביחד, וכל תקלה הופכת להזדמנות ללמוד.</p>
+          </article>
+        </div>
+        <p class="footer">
+          המטרה היא לא להחליף את השיעור, אלא להמשיך אותו בצורה מעשית, פשוטה וברורה.
+        </p>
+      </section>
+    </main>
+  </body>
+</html>
