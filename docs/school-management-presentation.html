@@ -1,0 +1,578 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <title>After Class AI - הצגה לבית הספר</title>
+    <style>
+      :root {
+        --ink: #152022;
+        --muted: #5c686c;
+        --line: #d9e2df;
+        --panel: #ffffff;
+        --soft: #f3f7f6;
+        --accent: #0f8f88;
+        --accent-dark: #086f70;
+        --blue: #2f66b1;
+        --rose: #b84e64;
+        --amber: #c47a12;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: #eef3f1;
+        color: var(--ink);
+        font-family: Arial, "Segoe UI", sans-serif;
+        line-height: 1.65;
+      }
+
+      main {
+        width: min(1020px, calc(100% - 40px));
+        margin: 0 auto;
+        padding: 34px 0 54px;
+      }
+
+      section,
+      header {
+        break-inside: avoid;
+      }
+
+      .hero {
+        min-height: 92vh;
+        display: grid;
+        align-content: center;
+        gap: 24px;
+        padding: 54px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background:
+          linear-gradient(135deg, rgba(15, 143, 136, 0.14), rgba(255, 255, 255, 0.94)),
+          radial-gradient(circle at 16% 16%, rgba(196, 122, 18, 0.18), transparent 28%),
+          #ffffff;
+      }
+
+      .brand {
+        display: inline-flex;
+        justify-self: start;
+        padding: 12px 22px;
+        border-radius: 8px;
+        background: var(--ink);
+        color: #fff;
+        font-size: 30px;
+        font-weight: 900;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin-top: 0;
+      }
+
+      h1 {
+        max-width: 860px;
+        margin-bottom: 12px;
+        font-size: 58px;
+        line-height: 1.05;
+      }
+
+      .lead {
+        max-width: 860px;
+        color: var(--muted);
+        font-size: 22px;
+      }
+
+      .meta-grid,
+      .cards,
+      .steps,
+      .risk-grid,
+      .metrics-grid {
+        display: grid;
+        gap: 16px;
+      }
+
+      .meta-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+      .meta,
+      .card,
+      .step,
+      .risk,
+      .metric,
+      .band {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel);
+      }
+
+      .meta {
+        padding: 16px;
+      }
+
+      .meta strong,
+      .metric strong {
+        display: block;
+        color: var(--accent-dark);
+        font-size: 26px;
+      }
+
+      .meta span,
+      .metric span {
+        color: var(--muted);
+      }
+
+      .section {
+        margin-top: 28px;
+        padding: 34px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: #fff;
+      }
+
+      h2 {
+        margin-bottom: 14px;
+        font-size: 34px;
+        line-height: 1.2;
+      }
+
+      h3 {
+        margin-bottom: 8px;
+        font-size: 22px;
+      }
+
+      .cards {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .card,
+      .step,
+      .risk,
+      .metric {
+        padding: 18px;
+      }
+
+      .card.accent {
+        border-color: rgba(15, 143, 136, 0.38);
+        background: #eff9f7;
+      }
+
+      .card.warning {
+        border-color: rgba(196, 122, 18, 0.35);
+        background: #fff8ea;
+      }
+
+      .card.blue {
+        border-color: rgba(47, 102, 177, 0.3);
+        background: #f3f7fd;
+      }
+
+      ul {
+        margin: 0;
+        padding-right: 20px;
+      }
+
+      li {
+        margin: 6px 0;
+      }
+
+      .steps {
+        grid-template-columns: repeat(5, 1fr);
+        counter-reset: step;
+      }
+
+      .step {
+        position: relative;
+      }
+
+      .step::before {
+        counter-increment: step;
+        content: counter(step);
+        display: grid;
+        place-items: center;
+        width: 34px;
+        height: 34px;
+        margin-bottom: 10px;
+        border-radius: 8px;
+        background: var(--accent);
+        color: #fff;
+        font-weight: 900;
+      }
+
+      .flow {
+        display: grid;
+        grid-template-columns: 1fr 42px 1fr 42px 1fr;
+        align-items: center;
+        margin-top: 18px;
+      }
+
+      .node {
+        min-height: 96px;
+        display: grid;
+        place-items: center;
+        padding: 14px;
+        border: 2px solid var(--accent);
+        border-radius: 8px;
+        background: #f5fbfa;
+        text-align: center;
+        font-weight: 800;
+      }
+
+      .node.blue {
+        border-color: var(--blue);
+        background: #f3f7fd;
+      }
+
+      .node.green {
+        border-color: #28945f;
+        background: #f3fbf6;
+      }
+
+      .connector {
+        height: 2px;
+        background: var(--line);
+      }
+
+      .band {
+        padding: 22px;
+        background: var(--soft);
+      }
+
+      .risk-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .metrics-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+      .tag {
+        display: inline-flex;
+        align-items: center;
+        min-height: 30px;
+        margin: 0 0 10px;
+        padding: 0 10px;
+        border-radius: 8px;
+        background: #e8f1f0;
+        color: var(--accent-dark);
+        font-weight: 800;
+      }
+
+      .ltr {
+        direction: ltr;
+        unicode-bidi: isolate;
+        display: inline-block;
+      }
+
+      .footer-note {
+        margin-top: 24px;
+        padding-top: 18px;
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      @media print {
+        body {
+          background: #fff;
+        }
+
+        main {
+          width: 100%;
+          padding: 0;
+        }
+
+        .section,
+        .hero {
+          border-radius: 0;
+          border-left: 0;
+          border-right: 0;
+        }
+
+        .section {
+          page-break-inside: avoid;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header class="hero">
+        <div class="brand">After Class AI</div>
+        <div>
+          <h1>כיתה חיה לתרגול אוטומציה ובינה מלאכותית אחרי השיעור</h1>
+          <p class="lead">
+            הצעה לפיילוט לימודי שמאפשר לתלמידים לתרגל בפועל תהליכי אוטומציה, להריץ תרגילים, לקבל משוב, ולבקש עזרה בזמן אמת, בלי שכל תלמיד יצטרך לרכוש מנויים או להקים תשתית לבד.
+          </p>
+        </div>
+        <div class="meta-grid">
+          <div class="meta">
+            <strong>30+</strong>
+            <span>תלמידים בכיתה</span>
+          </div>
+          <div class="meta">
+            <strong>0</strong>
+            <span>דרישת מנוי אישי לתלמיד</span>
+          </div>
+          <div class="meta">
+            <strong>1</strong>
+            <span>סביבת כיתה משותפת</span>
+          </div>
+          <div class="meta">
+            <strong>חי</strong>
+            <span>מעקב מורה בזמן שיעור</span>
+          </div>
+        </div>
+      </header>
+
+      <section class="section">
+        <h2>הבעיה שהמערכת פותרת</h2>
+        <div class="cards">
+          <article class="card warning">
+            <h3>פער בין שיעור לתרגול</h3>
+            <p>
+              בשיעורי אוטומציה ובינה מלאכותית קל להבין את ההדגמה, אבל קשה להמשיך לתרגל לבד אחרי שהמפגש מסתיים.
+            </p>
+          </article>
+          <article class="card warning">
+            <h3>עלות וכלים מפוזרים</h3>
+            <p>
+              תלמידים נדרשים לעיתים לחשבונות, מנויים, מפתחות שימוש, הרשאות ותשתיות שלא תמיד זמינים בתקופת הלימודים.
+            </p>
+          </article>
+          <article class="card warning">
+            <h3>המורה לא רואה תקיעות</h3>
+            <p>
+              בזמן תרגול מקביל קשה לדעת מי הצליח, מי נכשל, ומי צריך עזרה בלי לעצור את כל השיעור.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>הפתרון המוצע</h2>
+        <p>
+          <span class="ltr">After Class AI</span>
+          הוא ממשק כיתה שמתחבר לסביבת
+          <span class="ltr">n8n</span>
+          ומרכז את חוויית התרגול במקום אחד: מורה מפרסם תרגיל, תלמידים מצטרפים, מורידים את התרגיל, מריצים בדיקה, והמורה רואה את מצב הכיתה בלוח חי.
+        </p>
+        <div class="flow">
+          <div class="node">מורה מעלה תרגיל</div>
+          <div class="connector"></div>
+          <div class="node blue">תלמיד מתרגל ומריץ בדיקה</div>
+          <div class="connector"></div>
+          <div class="node green">לוח מורה מתעדכן בזמן אמת</div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>איך זה נראה בשיעור</h2>
+        <div class="steps">
+          <article class="step">
+            <h3>פתיחה</h3>
+            <p>המורה מציג את המשימה ואת מטרת השיעור.</p>
+          </article>
+          <article class="step">
+            <h3>פרסום</h3>
+            <p>המורה מעלה קובץ תרגיל ומפרסם אותו לכיתה.</p>
+          </article>
+          <article class="step">
+            <h3>תרגול</h3>
+            <p>התלמידים מורידים ומייבאים את התרגיל לסביבת העבודה.</p>
+          </article>
+          <article class="step">
+            <h3>בדיקה</h3>
+            <p>התלמידים מריצים בדיקה מהממשק ומקבלים חיווי ברור.</p>
+          </article>
+          <article class="step">
+            <h3>תמיכה</h3>
+            <p>המורה רואה מי הצליח, מי נכשל, ומי ביקש עזרה.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>מה המורה מקבל</h2>
+        <div class="cards">
+          <article class="card accent">
+            <h3>לוח כיתה חי</h3>
+            <ul>
+              <li>מי הצטרף לשיעור</li>
+              <li>מי הריץ בדיקה</li>
+              <li>מי הצליח</li>
+              <li>מי צריך עזרה</li>
+            </ul>
+          </article>
+          <article class="card accent">
+            <h3>הכנת שיעור</h3>
+            <ul>
+              <li>העלאת קובץ תרגיל</li>
+              <li>הגדרת מטרה ותיקון מודרך</li>
+              <li>שמירה כתבנית</li>
+              <li>פרסום לכיתה בלחיצה</li>
+            </ul>
+          </article>
+          <article class="card accent">
+            <h3>ניהול שקט בזמן זום</h3>
+            <ul>
+              <li>פחות פקודות טכניות</li>
+              <li>פחות מעבר בין מסכים</li>
+              <li>יותר זמן למידה אמיתית</li>
+              <li>תמונה כיתתית ברורה</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>מה התלמיד מקבל</h2>
+        <div class="cards">
+          <article class="card blue">
+            <h3>כניסה פשוטה</h3>
+            <p>התלמיד נכנס עם שם וקוד שיעור, ללא צורך בהרשאות מורכבות.</p>
+          </article>
+          <article class="card blue">
+            <h3>תרגיל מוכן</h3>
+            <p>כפתור הורדה מביא את קובץ התרגיל הנכון שהמורה פרסם.</p>
+          </article>
+          <article class="card blue">
+            <h3>משוב ברור</h3>
+            <p>בדיקה מצליחה או נכשלת עם חיווי בממשק, בלי לקרוא שגיאות בקונסול.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>התשתית בשלב הפיילוט</h2>
+        <div class="band">
+          <p>
+            הפיילוט בנוי כך שאפשר להתחיל מהר וללא השקעה כבדה: אתר סטטי לממשק, גיליון
+            <span class="ltr">Google Sheets</span>
+            כבסיס נתונים זמני, סקריפט
+            <span class="ltr">Apps Script</span>
+            לשמירת פעולות, וסביבת
+            <span class="ltr">n8n</span>
+            אחת לתרגול.
+          </p>
+        </div>
+        <div class="cards">
+          <article class="card">
+            <span class="tag">ממשק</span>
+            <p>מסכי מורה ותלמיד, תרגילים, חיווי, לוח חי וערכת תלמיד.</p>
+          </article>
+          <article class="card">
+            <span class="tag">נתונים</span>
+            <p>שמירת תלמידים, הרצות, בקשות עזרה ותבניות שיעור בגיליון.</p>
+          </article>
+          <article class="card">
+            <span class="tag">אוטומציה</span>
+            <p>תרגילים שמיובאים לסביבת העבודה ונבדקים דרך הממשק.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>למה זה חשוב לבית הספר</h2>
+        <div class="metrics-grid">
+          <div class="metric">
+            <strong>נגישות</strong>
+            <span>יותר תלמידים יכולים לתרגל גם בלי מנוי אישי.</span>
+          </div>
+          <div class="metric">
+            <strong>שליטה</strong>
+            <span>התרגילים, ההרצות והעזרה מרוכזים במקום אחד.</span>
+          </div>
+          <div class="metric">
+            <strong>איכות</strong>
+            <span>המורה מזהה בזמן אמת איפה הכיתה נתקעת.</span>
+          </div>
+          <div class="metric">
+            <strong>סקייל</strong>
+            <span>אותו מודל יכול לשרת מחזורים נוספים בהמשך.</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>בקרות וסיכונים</h2>
+        <div class="risk-grid">
+          <article class="risk">
+            <h3>עלות שימוש בכלי בינה מלאכותית</h3>
+            <p>
+              מתחילים בתרגילי דמו או במפתח שימוש מרכזי ומוגבל. בהמשך ניתן להגדיר תקציב חודשי, מכסות, ומודלים זולים יותר לתרגול.
+            </p>
+          </article>
+          <article class="risk">
+            <h3>אבטחת מפתחות והרשאות</h3>
+            <p>
+              לא שומרים מפתחות בתוך קבצי תרגיל. כל סוד נשמר רק בסביבת עבודה מבוקרת, עם חשבונות דמו ונתונים לא רגישים.
+            </p>
+          </article>
+          <article class="risk">
+            <h3>עומס טכני בזמן שיעור</h3>
+            <p>
+              הממשק נועד לצמצם פקודות ידניות. תלמיד לוחץ, מוריד, מריץ, ומבקש עזרה מתוך מסך אחד.
+            </p>
+          </article>
+          <article class="risk">
+            <h3>אחריות תחזוקה</h3>
+            <p>
+              הפיילוט יכול להתחיל על שרת אישי לצורך הוכחת יכולת, ובהמשך לעבור לשרת בית ספרי מסודר.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>הצעת פיילוט לבית הספר</h2>
+        <div class="steps">
+          <article class="step">
+            <h3>שבוע 1</h3>
+            <p>שיעור ניסיון עם תרגיל אחד ולוח מורה חי.</p>
+          </article>
+          <article class="step">
+            <h3>שבוע 2</h3>
+            <p>איסוף משוב מתלמידים ומורה ושיפור חוויית השימוש.</p>
+          </article>
+          <article class="step">
+            <h3>שבוע 3</h3>
+            <p>הוספת תבניות שיעור ותרגילים נוספים.</p>
+          </article>
+          <article class="step">
+            <h3>שבוע 4</h3>
+            <p>החלטה על שרת קבוע, הרשאות, ונוהל הפעלה.</p>
+          </article>
+          <article class="step">
+            <h3>המשך</h3>
+            <p>פתיחה למחזורי לימוד נוספים ולתרגול עצמאי.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>מה מבקשים מהנהלת הקורס</h2>
+        <div class="cards">
+          <article class="card accent">
+            <h3>אישור פיילוט</h3>
+            <p>להפעיל את המערכת בשיעור אחד או שניים עם הכיתה הנוכחית.</p>
+          </article>
+          <article class="card accent">
+            <h3>שיתוף פעולה עם המרצה</h3>
+            <p>לבנות יחד תרגילים שמתאימים בדיוק לחומר הנלמד.</p>
+          </article>
+          <article class="card accent">
+            <h3>בדיקת המשך</h3>
+            <p>אם הפיילוט מצליח, להחליט האם להפעיל שרת בית ספרי מסודר.</p>
+          </article>
+        </div>
+        <p class="footer-note">
+          המסמך מציג פיילוט לימודי. המטרה היא לשפר תרגול, להפחית חסמי כניסה, וליצור סביבת עבודה מעשית שממשיכה את השיעור במקום שבו ההדגמה מסתיימת.
+        </p>
+      </section>
+    </main>
+  </body>
+</html>
