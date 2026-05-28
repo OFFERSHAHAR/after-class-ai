@@ -45,6 +45,7 @@ const helpButton = document.querySelector("#helpRequest");
 const downloadButton = document.querySelector("#downloadWorkflow");
 const testChatbotButton = document.querySelector("#testChatbot");
 const chatbotResult = document.querySelector("#chatbotResult");
+const workflowMap = document.querySelector(".node-map");
 const openN8nLink = document.querySelector("#openN8n");
 const roleLabel = document.querySelector("#roleLabel");
 const pageTitle = document.querySelector("#pageTitle");
@@ -135,6 +136,24 @@ function setChatbotResult(message, status = "") {
   chatbotResult.textContent = message;
   chatbotResult.className = `result-box ${status}`.trim();
   cueElement(chatbotResult);
+}
+
+function setWorkflowMapRunning(isRunning, result = "") {
+  if (!workflowMap) return;
+  workflowMap.classList.toggle("is-running", isRunning);
+
+  if (isRunning) {
+    workflowMap.classList.remove("run-success", "run-error");
+  }
+
+  if (result) {
+    workflowMap.classList.toggle("run-success", result === "success");
+    workflowMap.classList.toggle("run-error", result === "error");
+    window.clearTimeout(setWorkflowMapRunning.timer);
+    setWorkflowMapRunning.timer = window.setTimeout(() => {
+      workflowMap.classList.remove("run-success", "run-error");
+    }, 2200);
+  }
 }
 
 function cueElement(element) {
@@ -607,6 +626,7 @@ document.querySelector("#studentRun").addEventListener("click", async () => {
 
 document.querySelector("#testChatbot").addEventListener("click", async () => {
   const release = setButtonBusy(testChatbotButton, "בודק...");
+  setWorkflowMapRunning(true);
   const name = document.querySelector("#studentName").value.trim() || "תלמיד/ה";
   const sessionCode = sessionCodeInput.value.trim() || defaultSessionCode;
   setAction("שולח בדיקה אל התרגיל ומחכה לתשובה...", "busy");
@@ -616,6 +636,7 @@ document.querySelector("#testChatbot").addEventListener("click", async () => {
     setChatbotResult("מצב דמו: הצאט בוט החזיר תשובה מובנית לשירות לקוחות.", "success");
     setAction("בדיקת דמו הסתיימה.", "success");
     showToast("בדיקה הסתיימה", "קיבלת תשובת דמו תקינה מהתרגיל.");
+    setWorkflowMapRunning(false, "success");
     release();
     return;
   }
@@ -634,17 +655,21 @@ document.querySelector("#testChatbot").addEventListener("click", async () => {
       setChatbotResult(result, "success");
       setAction("הבדיקה הצליחה ונרשמה בלוח.", "success");
       showToast("בדיקה הצליחה", "התשובה נקלטה והופיעה בלוח הכיתה.");
+      setWorkflowMapRunning(false, "success");
       await refreshState();
     } else {
       setChatbotResult(payload.error || JSON.stringify(payload, null, 2), "error");
       setAction("הבדיקה נכשלה ונרשמה בלוח.", "error");
       showToast("הבדיקה נכשלה", "התקלה נשמרה כדי שהמורה יוכל לראות ולעזור.");
+      setWorkflowMapRunning(false, "error");
       await refreshState();
     }
   } catch (error) {
     setChatbotResult(error.message, "error");
     setAction(error.message, "error");
+    setWorkflowMapRunning(false, "error");
   } finally {
+    setWorkflowMapRunning(false);
     release();
   }
 });

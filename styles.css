@@ -686,6 +686,7 @@ button.is-busy::before {
   align-items: center;
   min-height: 220px;
   margin: 14px 0;
+  position: relative;
 }
 
 .node {
@@ -697,6 +698,11 @@ button.is-busy::before {
   background: #f5fbfa;
   font-weight: 800;
   text-align: center;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .node.ai {
@@ -712,6 +718,40 @@ button.is-busy::before {
 .connector {
   height: 2px;
   background: var(--line);
+  position: relative;
+  overflow: hidden;
+}
+
+.node-map.is-running .node {
+  animation: workflow-node 1.35s ease-in-out infinite;
+}
+
+.node-map.is-running .node.ai {
+  animation-delay: 0.2s;
+}
+
+.node-map.is-running .node.sheet {
+  animation-delay: 0.4s;
+}
+
+.node-map.is-running .connector::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  animation: workflow-flow 0.95s linear infinite;
+}
+
+.node-map.run-success .node {
+  border-color: #19a05f;
+  background: #ecfbf2;
+  box-shadow: 0 0 0 4px rgba(25, 160, 95, 0.12);
+}
+
+.node-map.run-error .node {
+  border-color: var(--rose);
+  background: #fff3f5;
+  box-shadow: 0 0 0 4px rgba(184, 78, 100, 0.12);
 }
 
 .template-grid {
@@ -838,6 +878,39 @@ button.is-busy::before {
   }
 }
 
+@keyframes workflow-node {
+  0%,
+  100% {
+    transform: translateY(0);
+    box-shadow: none;
+  }
+
+  45% {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 26px rgba(18, 33, 36, 0.12);
+  }
+}
+
+@keyframes workflow-flow {
+  from {
+    transform: translateX(100%);
+  }
+
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes workflow-flow-y {
+  from {
+    transform: translateY(-100%);
+  }
+
+  to {
+    transform: translateY(100%);
+  }
+}
+
 .template-card {
   display: grid;
   gap: 12px;
@@ -894,5 +967,10 @@ button.is-busy::before {
     width: 2px;
     height: 26px;
     justify-self: center;
+  }
+
+  .node-map.is-running .connector::after {
+    background: linear-gradient(180deg, transparent, var(--accent), transparent);
+    animation-name: workflow-flow-y;
   }
 }
